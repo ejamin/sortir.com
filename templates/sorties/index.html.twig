@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Sorties{% endblock %}
+
+{% block body %}
+    <div>
+        {% for label,  messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    {% if label == "success" %}
+                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
+                    {% elseif label == "warning" %}
+                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
+                    {% elseif label == "error" %}
+                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for sortie in sorties %}
+            <a class="text-decoration-none" href="{{ path('sortie_detail',{id : sortie.id}) }}">
+                <img src="{{ asset('img/photoVisite/' ~ sortie.urlPhoto) }}" class="card-img-top" alt="{{ sortie.nom }}" />
+            </a>
+            <p>{{ sortie.nom }}</p>
+            <p>Date : {{ sortie.dateDebut|date('d-m-Y H:m') }}</p>
+            <p>Clotûre : {{ sortie.dateFin|date('d-m-Y H:m') }}</p>
+            <p>Durée : {{ sortie.duree }}</p>
+            <p>Nombre d'inscrit : 0 / {{ sortie.nbInscritMax }}</p>
+            <p>Campus : {{ sortie.idSite.nom }}</p>
+            <p>A {{ sortie.idLieu.nom }}</p>
+            <p>Au {{ sortie.idLieu.rue }}, {{ sortie.idLieu.idVille.codePostal}} {{ sortie.idLieu.idVille.nom}}</p>
+            {% if sortie.idLieu.latitude != null %}
+                <p>{{ sortie.idLieu.latitude }}</p>
+            {% endif %}
+            {% if sortie.idLieu.longitude != null %}
+                <p>{{ sortie.idLieu.longitude }}</p>
+            {% endif %}
+            <p>Etat : {{ sortie.idEtat.libelle }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
