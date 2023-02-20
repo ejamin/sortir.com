@@ -31,7 +31,7 @@ class Sorties
     #[ORM\Column]
     private ?int $nbInscritMax = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -51,6 +51,9 @@ class Sorties
 
     #[ORM\ManyToOne(inversedBy: 'idSortie')]
     private ?Etats $idEtat = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $motif = null;
 
     public function __construct()
     {
@@ -127,7 +130,7 @@ class Sorties
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -220,4 +223,17 @@ class Sorties
 
         return $this;
     }
+
+    public function getMotif(): ?string
+    {
+        return $this->motif;
+    }
+
+    public function setMotif(string $motif): self
+    {
+        $this->motif = $motif;
+
+        return $this;
+    }
+
 }
