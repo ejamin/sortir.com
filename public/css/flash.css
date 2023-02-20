@@ -1,0 +1,45 @@
+/**
+ * Css pour les Flashs après une étape du CRUD
+ */
+
+.flash-success {
+    border: 1px solid rgba(36, 241, 6, 0.46);
+    background-color: rgba(7, 149, 66, 0.12156862745098039);
+    color: #0ad406;
+    text-shadow: 2px 1px #00040a;
+    transition:0.5s;
+    cursor:pointer;
+    margin-bottom: 10px;
+}
+.flash-success:hover{
+    background-color: rgba(7, 149, 66, 0.35);
+    transition:0.5s;
+}
+
+.flash-warning {
+    border: 1px solid rgba(241, 142, 6, 0.81);
+    background-color: rgba(220, 128, 1, 0.16);
+    color: #ffb103;
+    text-shadow: 2px 1px #00040a;
+    transition:0.5s;
+    cursor:pointer;
+    margin-bottom: 10px;
+}
+.flash-warning:hover{
+    background-color: rgba(220, 128, 1, 0.33);
+    transition:0.5s;
+}
+
+.flash-error {
+    border: 1px solid rgba(241, 6, 6, 0.81);
+    background-color: rgba(220, 17, 1, 0.16);
+    color: #ff0303;
+    text-shadow: 2px 1px #00040a;
+    transition:0.5s;
+    cursor:pointer;
+    margin-bottom: 10px;
+}
+.flash-error:hover{
+    background-color: rgba(220, 17, 1, 0.33);
+    transition:0.5s;
+}
