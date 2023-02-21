@@ -55,7 +55,7 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'update')]
+    #[Route('/update/{id}', name: 'update')]
     public function update(Request $request, UserPasswordHasherInterface $userPasswordHasher, $id): Response {
         $participant = $this->participantsRepository->find($id);
         $user = $this->getUser();
@@ -81,6 +81,15 @@ class ParticipantController extends AbstractController
 
         return $this->render('participants/update.html.twig', [
             'participantForm' => $participantForm->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'show')]
+    public function show($id): Response {
+        $participant = $this->participantsRepository->find($id);
+       
+        return $this->render('participants/show.html.twig', [
+            'participant' => $participant
         ]);
     }
 }
