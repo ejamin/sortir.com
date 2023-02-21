@@ -24,10 +24,10 @@ class SitesController extends AbstractController
     #[Route('/', name: 'app_sites')]
     public function index(): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_ADMIN");
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux administrateurs !");
-//        }
+        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux administrateurs !");
+        }
 
         #Création des états à l'arriver de la page
         if(!$this->sitesRepository->findBy(['nom' => 'ENI Rennes'])) {
@@ -79,6 +79,11 @@ class SitesController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_sites')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
+        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux administrateurs !");
+        }
+
         $site = $this->sitesRepository->find($id);
         if($token = new CsrfToken('app_delete_sites', $request->query->get('_csrf_token'))) {
             if(!$csrfTokenManager->isTokenValid($token)) {

@@ -2,14 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\Participants;
+use App\Form\ParticipantsFormType;
+use App\Repository\ParticipantsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthentificateurController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
+    private ParticipantsRepository $participantsRepository;
+
+    public function __construct(ParticipantsRepository $participantsRepository)
+    {
+        $this->participantsRepository = $participantsRepository;
+    }
+
+    #[Route(path: '/connexion', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // if ($this->getUser()) {
@@ -24,9 +36,64 @@ class AuthentificateurController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
+    #[Route(path: '/déconnexion', name: 'app_logout')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    #[Route('/inscription', name: 'create_participant')]
+    public function create(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response {
+        $participant = new Participants();
+        $participant->setIsActif(true);
+        $participant->setIsAdmin(false);
+        $participant->setRoles(["ROLE_PARTICIPANT"]);
+
+        $participantForm = $this->createForm(ParticipantsFormType::class,$participant);
+        $participantForm->handleRequest($request);
+
+        if($participantForm->isSubmitted() && $participantForm->isValid()){
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $participant,
+                    $participantForm->get('password')->getData()
+                )
+            );
+            $this->participantsRepository->save($participant,true);
+            return $this->redirectToRoute("app_participant_liste");
+        }
+
+        return $this->render('participants/create.html.twig', [
+            'participantForm' => $participantForm->createView(),
+        ]);
+    }
+
+    #[Route('/mon-profil/{id}', name: 'update_participant')]
+    public function update(Request $request, UserPasswordHasherInterface $userPasswordHasher, $id): Response {
+        $participant = $this->participantsRepository->find($id);
+        $user = $this->getUser();
+
+        if ($participant !== $user){
+            return $this->redirectToRoute("app_403");
+        }
+
+        $participantForm = $this->createForm(ParticipantsFormType::class,$participant);
+
+        $participantForm->handleRequest($request);
+
+        if($participantForm->isSubmitted() && $participantForm->isValid()){
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $participant,
+                    $participantForm->get('password')->getData()
+                )
+            );
+            $this->participantsRepository->save($participant,true);
+            return $this->redirectToRoute("app_participant_liste");
+        }
+
+        return $this->render('participants/update.html.twig', [
+            'participantForm' => $participantForm->createView(),
+        ]);
     }
 }

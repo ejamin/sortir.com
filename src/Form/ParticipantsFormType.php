@@ -39,6 +39,7 @@ class ParticipantsFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Participants::class,
+            'csrf_protection' => true
         ]);
     }
 }
