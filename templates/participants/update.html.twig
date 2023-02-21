@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+{{ parent() }} - Mon profil 
+{% endblock %}
+
+{% block body %}
+
+<div class="row mt-5">
+   <h2> Mon profil </h2>
+
+   {{ form(participantForm) }}
+</div>
+
+{% endblock %}
