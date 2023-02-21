@@ -2,19 +2,15 @@
 
 namespace App\DataFixtures;
 
-
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\Participants;
 
-class AppFixtures
+class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
         // $product = new Product();
         // $manager->persist($product);
-        $participant = new Participants();
-        $participant->setEmail("toto@titi.com");
-
         $manager->flush();
     }
 }

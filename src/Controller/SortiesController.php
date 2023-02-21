@@ -6,6 +6,7 @@ use App\Entity\Sorties;
 use App\Form\SortieAnnulerFormType;
 use App\Form\SortieFormType;
 use App\Repository\EtatsRepository;
+use App\Repository\ParticipantsRepository;
 use App\Repository\SortiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -19,12 +20,13 @@ class SortiesController extends AbstractController
 {
     private SortiesRepository $sortiesRepository;
     private EtatsRepository $etatsRepository;
+    private ParticipantsRepository $participantsRepository;
 
-
-    public function __construct(SortiesRepository $sortiesRepository,EtatsRepository $etatsRepository)
+    public function __construct(SortiesRepository $sortiesRepository,EtatsRepository $etatsRepository,ParticipantsRepository $participantsRepository)
     {
         $this->sortiesRepository = $sortiesRepository;
         $this->etatsRepository = $etatsRepository;
+        $this->participantsRepository = $participantsRepository;
     }
 
     #[Route('/', name: 'app_sorties')]
@@ -38,11 +40,11 @@ class SortiesController extends AbstractController
     #[Route('/création', name: 'create_sorties')]
     public function create(Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        $participant = $this->getUser();
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $participant =  $this->getUser();
+//        if (!$isParticipant) {
+//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+//        }
 
         $sortie = new Sorties();
         $sortie->setIdOrganisateur($participant);
@@ -129,6 +131,7 @@ class SortiesController extends AbstractController
     public function delete($id,Request $request): Response
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $isAdmin = $this->isGranted("ROLE_ADMIN");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
         }
@@ -150,6 +153,51 @@ class SortiesController extends AbstractController
             }
         }
         return $this->render('sorties/delete.html.twig', ['annulerForm' => $annulerForm->createView()]);
+    }
+
+    #-- INSCRIPTION / DESISTER --#
+
+    #[Route('/inscription', name: 'inscription_sorties')]
+    public function inscription(Request $request)
+    {
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
+
+        #Récupération de l'ID de la sortie et du participant lors du click
+        $idSortie = (int)$request->query->get('idSortie');
+        $idParticipant = (int)$request->query->get('idParticipant');
+        $sortie = $this->sortiesRepository->find($idSortie);
+        $participant = $this->participantsRepository->find($idParticipant);
+
+        #Ajout en base de donnée
+        $sortie->addIdParticipant($participant);
+        $this->sortiesRepository->save($sortie);
+
+        return $this->render('appInscritDesister/ajax.html.twig',['nbInscrit' => $sortie->getIdParticipant()->count(),'sortie' => $sortie]);
+    }
+
+    #[Route('/desister', name: 'desister_sorties')]
+    public function desister(Request $request)
+    {
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
+
+        #Récupération de l'ID de la sortie et du participant lors du click
+        $idSortie = (int)$request->query->get('idSortie');
+        $idParticipant = (int)$request->query->get('idParticipant');
+        $sortie = $this->sortiesRepository->find($idSortie);
+        $participant = $this->participantsRepository->find($idParticipant);
+
+        #Suppression en base de donnée
+        $sortie->removeIdParticipant($participant);
+        $this->sortiesRepository->save($sortie);
+
+        return $this->render('appInscritDesister/ajax.html.twig',['nbInscrit' => $sortie->getIdParticipant()->count(),'sortie' => $sortie]);
+
     }
 
 }

@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VillesRepository::class)]
-#[UniqueEntity(fields: ['nom'], message: 'There is already a city with this name')]
+#[UniqueEntity(fields: ['nom'], message: 'Nom de ville déjà utilisée')]
 class Villes
 {
     #[ORM\Id]

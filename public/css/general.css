@@ -1,0 +1,24 @@
+.centerPage {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.txtSouligner {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    text-decoration: underline;
+}
+
+.txtBold {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform : uppercase;
+}
+
+.txtbold {
+    font-weight: bold;
+}
