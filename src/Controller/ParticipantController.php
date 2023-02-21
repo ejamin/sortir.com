@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ParticipantsRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[Route('/participant',name: 'app_participant_')]
+#[Route('/participant')]
 class ParticipantController extends AbstractController
 {
     private ParticipantsRepository $participantsRepository;
@@ -21,7 +21,7 @@ class ParticipantController extends AbstractController
         $this->participantsRepository = $participantsRepository;
     }
 
-    #[Route('/', name: 'liste')]
+    #[Route('/', name: 'app_participant')]
     public function index(): Response
     {
         return $this->render('participants/index.html.twig', [
@@ -29,7 +29,7 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('/add', name: 'create')]
+    #[Route('/add', name: 'create_participant')]
     public function add(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response {
         $participant = new Participants();
         $participant->setIsActif(true);
@@ -55,7 +55,7 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{id}', name: 'update')]
+    #[Route('/{id}', name: 'update_participant')]
     public function update(Request $request, UserPasswordHasherInterface $userPasswordHasher, $id): Response {
         $participant = $this->participantsRepository->find($id);
         $user = $this->getUser();
@@ -87,7 +87,7 @@ class ParticipantController extends AbstractController
     #[Route('/{id}', name: 'show')]
     public function show($id): Response {
         $participant = $this->participantsRepository->find($id);
-       
+
         return $this->render('participants/show.html.twig', [
             'participant' => $participant
         ]);
