@@ -1,10 +1,11 @@
-<?php //TODO : isGranted('ROLE_ADMIN')
+<?php
 
 namespace App\Controller;
 
 use App\Entity\Etats;
 use App\Repository\EtatsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
@@ -91,5 +92,13 @@ class EtatsController extends AbstractController
         $etats = $this->etatsRepository->findAll();
 
         return $this->render('etats/index.html.twig', ['etats' => $etats]);
+    }
+
+    #[Route('/suppression/{id}', name: 'delete_lieux')]
+    public function delete($id): Response
+    {
+        $etat = $this->etatsRepository->find($id);
+        $this->etatsRepository->remove($etat, true);
+        return $this->redirectToRoute('app_etat');
     }
 }
