@@ -1,4 +1,4 @@
-<?php //TODO : isGranted('ROLE_PARTICIPANT')
+<?php
 
 namespace App\Controller;
 
@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
+#[Route('/sorties')]
 class SortiesController extends AbstractController
 {
     private SortiesRepository $sortiesRepository;
@@ -26,7 +27,7 @@ class SortiesController extends AbstractController
         $this->etatsRepository = $etatsRepository;
     }
 
-    #[Route('/sorties', name: 'app_sorties')]
+    #[Route('/', name: 'app_sorties')]
     public function index(): Response
     {
         #Formulaire de recherche
@@ -34,17 +35,17 @@ class SortiesController extends AbstractController
         return $this->render('sorties/index.html.twig', ['sorties' => $sorties]);
     }
 
-    #[Route('/sortie/création', name: 'create_sorties')]
+    #[Route('/création', name: 'create_sorties')]
     public function create(Request $request): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-//        $participant = $this->getUser();
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-//        }
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $participant = $this->getUser();
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
 
         $sortie = new Sorties();
-//        $sortie->setIdOrganisateur($participant);
+        $sortie->setIdOrganisateur($participant);
         $sortieForm = $this->createForm(SortieFormType::class, $sortie);
         $sortieForm->handleRequest($request);
 
@@ -76,13 +77,13 @@ class SortiesController extends AbstractController
         return $this->render('sorties/create.html.twig',['sortieForm' => $sortieForm->createView()]);
     }
 
-    #[Route('/sortie/{id}', name: 'read_sorties')]
+    #[Route('/{id}', name: 'read_sorties')]
     public function read($id): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-//        }
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
 
         $sortie = $this->sortiesRepository->find($id);
         if (!$sortie) {
@@ -91,13 +92,13 @@ class SortiesController extends AbstractController
         return $this->render('sorties/read.html.twig', ['sortie' => $sortie]);
     }
 
-    #[Route('/sortie/modification/{id}', name: 'update_sorties')]
+    #[Route('/modification/{id}', name: 'update_sorties')]
     public function update($id,Request $request): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-//        }
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
 
         $sortie = $this->sortiesRepository->find($id);
         if (!$sortie) {
@@ -124,13 +125,13 @@ class SortiesController extends AbstractController
         return $this->render('sorties/update.html.twig',['sortieForm' => $sortieForm->createView()]);
     }
 
-    #[Route('/sortie/annulation/{id}', name: 'delete_sorties')]
+    #[Route('/annulation/{id}', name: 'delete_sorties')]
     public function delete($id,Request $request): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-//        }
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
 
         $sortie = $this->sortiesRepository->find($id);
         if (!$sortie) {

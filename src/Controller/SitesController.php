@@ -1,4 +1,4 @@
-<?php //TODO : isGranted('ROLE_ADMIN')
+<?php
 
 namespace App\Controller;
 
@@ -20,10 +20,10 @@ class SitesController extends AbstractController
     #[Route('/sites', name: 'app_sites')]
     public function index(): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_ADMIN");
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux administrateurs !");
-//        }
+        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux administrateurs !");
+        }
 
         #Création des états à l'arriver de la page
         if(!$this->sitesRepository->findBy(['nom' => 'ENI Rennes'])) {
@@ -70,6 +70,13 @@ class SitesController extends AbstractController
         $sites = $this->sitesRepository->findAll();
 
         return $this->render('sites/index.html.twig', ['sites' => $sites]);
+    }
 
+    #[Route('/suppression/{id}', name: 'delete_sites')]
+    public function delete($id): Response
+    {
+        $site = $this->sitesRepository->find($id);
+        $this->sitesRepository->remove($site, true);
+        return $this->redirectToRoute('app_sites');
     }
 }
