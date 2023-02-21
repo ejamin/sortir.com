@@ -8,6 +8,101 @@
 
 <div class="row mt-5">
    <h2> Accueil </h2>
+   <div id="Infos">
+        date : {{ now }}
+    {% if app.user %}
+        participant : {{ app.user.pseudo }}
+    {% endif %}
+   </div>
+   <div id="filtre">
+        <h3> Filtrer les sorties </h3>
+        <form action="">
+            <label for="selectSites"> </label>
+            <select name="sites" id="selectSites">
+                {% for site in sites %}
+                    <option value="{{ site.nom }}">{{ site.nom }}</option>
+                {% endfor %}
+            </select>
+            <div id="divSearch">
+                <label for="searchText">Le nom de la sortie contient : </label>
+                <input type="text" id="searchText" name="search">
+            </div>
+            <div id="searchDates">
+                <label for="dateDebut">Entre :</label>
+                <input type="date" id="dateDebut" name="dateDebut">
+                <label for="dateFin"> et </label>
+                <input type="date" id="dateFin" name="dateFin">            
+            </div>
+            <div id="checkboxSorties">
+                <div id="divOrganisateur">
+                    <input type="checkbox" id="organisateur" name="organisateur" checked>
+                    <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+                </div>
+                
+                <div id="divInscrit">
+                    <input type="checkbox" id="inscrit" name="inscrit" checked>
+                    <label for="inscrit">Sorties auxquelles je suis inscrit/e</label>
+                </div>
+
+                <div id="divPasInscrit">
+                    <input type="checkbox" id="pasInscrit" name="pasInscrit" checked>
+                    <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                </div>
+
+                <div id="divSortiesPassees">
+                    <input type="checkbox" id="passees" name="passees" checked>
+                    <label for="passees">Sorties passées</label>
+                </div>
+                <input type="submit" value="rechercher">
+            </div>
+        </form>
+
+        <div id="listeSorties">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom de la sortie</th>
+                    <th>Date de la sortie</th>
+                    <th>Clôture</th>
+                    <th>Inscrits/places</th>
+                    <th>Etat</th>
+                    <th>Inscrit</th>
+                    <th>Organisateur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+            {% for sortie in sorties %}            
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateDebut }}</td>
+                    <td>{{ sortie.dateFin }}</td>
+                    <td>{{ sortie.nbInscriptMax }}</td>
+                    <td>{{ sortie.Etats.libelle }}</td>
+                    <td>{{ estInscrit }}</td>
+                    <td>{{ sortie.Organisateur}}</td>
+                    
+                    <td><a href="{{ path('read_sorties', { 'id': sortie.id })}}">Afficher</a> - 
+                    {% if (app.user == sortie.Organisateur) and (sortie.dateDebut >= date()) and (sortie.dateFin < date()) %}
+                        <a href="{{ path('delete_sorties', { 'id': sortie.id })}}">Annuler</a>
+                    {% elseif (app.user == sortie.Organisateur) and (sortie.dateDebut < date()) %}
+                        <a href="{{ path('update_sorties', { 'id': sortie.id })}}">Modifier</a> - 
+                        <a href="{{ path('publish_sorties', { 'id': sortie.id })}}">Publier</a>
+                    {% elseif (app.user) and (estInscrit == true) %}
+                        <a href="{{ path('inscription_sorties', { 'id': sortie.id })}}">S'inscrire</a>
+                    {% elseif (app.user) and estInscrit == false %}
+                        <a href="{{ path('desist_sorties', { 'id': sortie.id })}}">Se désinscrire</a>
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>    
+        </div>
+    
+   </div>
 </div>
 
 {% endblock %}
