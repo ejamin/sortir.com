@@ -22,7 +22,7 @@ class SortiesController extends AbstractController
     private EtatsRepository $etatsRepository;
     private ParticipantsRepository $participantsRepository;
 
-    public function __construct(SortiesRepository $sortiesRepository,EtatsRepository $etatsRepository,ParticipantsRepository $participantsRepository)
+    public function __construct(SortiesRepository $sortiesRepository, EtatsRepository $etatsRepository, ParticipantsRepository $participantsRepository)
     {
         $this->sortiesRepository = $sortiesRepository;
         $this->etatsRepository = $etatsRepository;
@@ -40,11 +40,11 @@ class SortiesController extends AbstractController
     #[Route('/création', name: 'create_sorties')]
     public function create(Request $request): Response
     {
-//        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         $participant =  $this->getUser();
-//        if (!$isParticipant) {
-//            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-//        }
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
 
         $sortie = new Sorties();
         $sortie->setIdOrganisateur($participant);
