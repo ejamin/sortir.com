@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 
 class EtatsController extends AbstractController
 {
@@ -94,11 +96,22 @@ class EtatsController extends AbstractController
         return $this->render('etats/index.html.twig', ['etats' => $etats]);
     }
 
-    #[Route('/suppression/{id}', name: 'delete_lieux')]
-    public function delete($id): Response
+    #[Route('/suppression/{id}', name: 'delete_etats')]
+    public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
         $etat = $this->etatsRepository->find($id);
-        $this->etatsRepository->remove($etat, true);
-        return $this->redirectToRoute('app_etat');
+        if($token = new CsrfToken('app_delete_etat', $request->query->get('_csrf_token'))) {
+            if(!$csrfTokenManager->isTokenValid($token)) {
+                $this->addFlash('warning', '');
+                throw $this->createAccessDeniedException('Jeton CSRF invalide');
+            } else {
+                try {
+                    $this->etatsRepository->remove($etat, true);
+                } catch (\Exception $exception) {
+                    $this->addFlash('error', '');
+                }
+            }
+        }
+        return $this->redirectToRoute('app_etats');
     }
 }
