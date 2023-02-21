@@ -20,7 +20,7 @@
         {% endfor %}
     </div>
 
-    <h3 class="centerPage">Nouveau lieu</h3>
+    <h3 class="centerPage">Modification du lieu</h3>
     <div class="container">
         {{ form_start(lieuForm) }}
         <div class="row">
@@ -65,35 +65,6 @@
         </button>
         {{ form_end(villeForm) }}
         {{ form_end(lieuForm) }}
-    </div>
-
-    <h3 class="centerPage">Listing des lieux</h3>
-    <div class="container">
-        {% for lieu in lieux %}
-        <div class="row">
-            <div class="col-2">
-                <p class="txtbold">{{ lieu.nom }}</p>
-            </div>
-            <div class="col-4">
-                <p>{{ lieu.rue }} à {{ lieu.idVille.codePostal }} {{ lieu.idVille.nom }}</p>
-            </div>
-            <div class="col-2">
-                <p>Latitude : {{ lieu.latitude }}</p>
-            </div>
-            <div class="col-2">
-                <p>Longitude : {{ lieu.longitude }}</p>
-            </div>
-            <div class="col-2">
-                <a class="btn btnUpdate" href="{{ path('update_lieux',{id: lieu.id }) }}">
-                    <span class="material-icons md-2">edit</span>
-                </a>
-                <a class="btn btnDelete" href="{{ path('delete_lieux',{id: lieu.id, _csrf_token: csrf_token('app_delete_lieux')}) }}">
-                    <span class="material-icons md-24">delete</span>
-                </a>
-            </div>
-            <hr />
-        </div>
-        {% endfor %}
     </div>
 
 {% endblock %}
