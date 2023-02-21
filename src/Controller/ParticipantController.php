@@ -30,10 +30,40 @@ class ParticipantController extends AbstractController
     }
 
     #[Route('/add', name: 'create')]
-    public function add(Request $request, UserPasswordHasherInterface $userPasswordHasher,): Response {
+    public function add(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response {
         $participant = new Participants();
         $participant->setIsActif(true);
         $participant->setIsAdmin(false);
+        $participant->setRoles(["ROLE_PARTICIPANT"]);
+
+        $participantForm = $this->createForm(ParticipantsFormType::class,$participant);
+        $participantForm->handleRequest($request);
+
+        if($participantForm->isSubmitted() && $participantForm->isValid()){
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $participant,
+                    $participantForm->get('password')->getData()
+                )
+            );
+            $this->participantsRepository->save($participant,true);
+            return $this->redirectToRoute("app_participant_liste");
+        }
+
+        return $this->render('participants/create.html.twig', [
+            'participantForm' => $participantForm->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'update')]
+    public function update(Request $request, UserPasswordHasherInterface $userPasswordHasher, $id): Response {
+        $participant = $this->participantsRepository->find($id);
+        $user = $this->getUser();
+
+        if ($participant !== $user){
+            return $this->redirectToRoute("app_403");
+        }
+
         $participantForm = $this->createForm(ParticipantsFormType::class,$participant);
 
         $participantForm->handleRequest($request);
@@ -49,7 +79,7 @@ class ParticipantController extends AbstractController
             return $this->redirectToRoute("app_participant_liste");
         }
 
-        return $this->render('participants/createParticipant.html.twig', [
+        return $this->render('participants/update.html.twig', [
             'participantForm' => $participantForm->createView(),
         ]);
     }
