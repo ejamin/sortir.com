@@ -22,3 +22,29 @@
 .txtbold {
     font-weight: bold;
 }
+
+.btnValider{
+    background: #21B6B1;
+    margin: 20px auto 30px;
+    width: 100%;
+    height: 50px;
+    border-radius: 5px;
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnValider:hover{
+    background: #5eb5e0;
+    margin: 20px auto 30px;
+    width: 100%;
+    height: 50px;
+    border-radius: 5px;
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

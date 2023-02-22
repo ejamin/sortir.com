@@ -31,7 +31,7 @@ class Sorties
     #[ORM\Column]
     private ?int $nbInscritMax = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT,nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -52,7 +52,7 @@ class Sorties
     #[ORM\ManyToOne(inversedBy: 'idSortie')]
     private ?Etats $idEtat = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $motif = null;
 
     public function __construct()
