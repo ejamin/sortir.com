@@ -20,14 +20,14 @@ class SortieFormType extends AbstractType
     {
         $builder
             ->add('nom', null, ['label' => 'Nom de la sortie : '])
-            ->add('dateDebut', DateTimeType::class, [ 'label' => 'Date de début', 'date_widget' => 'single_text', 'time_widget' => 'single_text'])
+            ->add('dateDebut', DateTimeType::class, [ 'label' => 'Date de début :', 'date_widget' => 'single_text', 'time_widget' => 'single_text'])
             ->add('duree', null, ['label' => 'Durée : '])
-            ->add('dateFin', DateTimeType::class, [ 'label' => 'Date de fin', 'date_widget' => 'single_text', 'time_widget' => 'single_text'])
+            ->add('dateFin', DateTimeType::class, [ 'label' => 'Date de fin :', 'date_widget' => 'single_text', 'time_widget' => 'single_text'])
             ->add('nbInscritMax', null, ['label' => 'Nombre d\'inscription max : '])
             ->add('description', null, ['label' => 'Description : '])
-            ->add('photo', FileType::class, ['mapped' => false, 'required' => false, 'constraints' => [new Image(['maxSize' => '7024k', 'mimeTypesMessage' => "Format de l'image non supporter"])]])
-            ->add('idSite',EntityType::class,['class' => Sites::class,'choice_label' => 'nom'])
-            ->add('idLieu',EntityType::class,['class' => Lieux::class,'choice_label' => 'nom'])
+            ->add('photo', FileType::class, ['label' => 'Photo :','mapped' => false, 'required' => false, 'constraints' => [new Image(['maxSize' => '7024k', 'mimeTypesMessage' => "Format de l'image non supporter"])]])
+            ->add('idSite',EntityType::class,['class' => Sites::class,'choice_label' => 'nom','label' => 'Campus : '])
+            ->add('idLieu',EntityType::class,['class' => Lieux::class,'choice_label' => 'nom','label' => 'Lieu : '])
 
             ->add('publier', SubmitType::class, ['label'=> "Publier"])
             ->add('enregistrer', SubmitType::class, ['label'=> "Enregistrer"])

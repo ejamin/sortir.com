@@ -41,13 +41,13 @@ class SortiesController extends AbstractController
     public function create(Request $request): Response
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        $participant =  $this->getUser();
+        $user =  $this->getUser();
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
         }
 
         $sortie = new Sorties();
-        $sortie->setIdOrganisateur($participant);
+        $sortie->setIdOrganisateur($user);
         $sortieForm = $this->createForm(SortieFormType::class, $sortie);
         $sortieForm->handleRequest($request);
 
@@ -74,6 +74,8 @@ class SortiesController extends AbstractController
             } catch (\Exception $exception) {
                 $this->addFlash('error', '');
             }
+
+            return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
         }
 
         return $this->render('sorties/create.html.twig',['sortieForm' => $sortieForm->createView()]);
@@ -132,8 +134,8 @@ class SortiesController extends AbstractController
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         $isAdmin = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        if (!$isParticipant || !$isAdmin) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site ou à un administrateur!");
         }
 
         $sortie = $this->sortiesRepository->find($id);
