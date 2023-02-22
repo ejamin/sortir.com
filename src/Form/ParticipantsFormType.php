@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\Image;
 
 class ParticipantsFormType extends AbstractType
 {
@@ -29,10 +31,8 @@ class ParticipantsFormType extends AbstractType
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmer'],
             ])
-            ->add('save', SubmitType::class,["label" => "Enregistrer"])
-            //->add('confirm',TextType::class)
-            //->add('ville',idSiteType::class);
-        ;
+            ->add('image', FileType::class, ['mapped' => false, 'required' => false, 'constraints' => [new Image(['maxSize' => '7024k', 'mimeTypesMessage' => "Format de l'image non supporter"])]])
+            ->add('save', SubmitType::class,["label" => "Enregistrer"]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
