@@ -8,56 +8,65 @@
 
 <div class="row mt-5">
    <h2> Accueil </h2>
-   <div id="Infos">
-        date : {{ now }}
+   <div id="Infos" class="d-flex flex-column align-items-end">
+        <p>date : {{ now }} </p>
     {% if app.user %}
-        participant : {{ app.user.pseudo }}
+        <p> participant : {{ app.user.pseudo }} </p>
     {% endif %}
    </div>
    <div id="filtre">
         <h3> Filtrer les sorties </h3>
         <form action="">
-            <label for="selectSites"> </label>
-            <select name="sites" id="selectSites">
-                {% for site in sites %}
-                    <option value="{{ site.nom }}">{{ site.nom }}</option>
-                {% endfor %}
-            </select>
-            <div id="divSearch">
-                <label for="searchText">Le nom de la sortie contient : </label>
-                <input type="text" id="searchText" name="search">
-            </div>
-            <div id="searchDates">
-                <label for="dateDebut">Entre :</label>
-                <input type="date" id="dateDebut" name="dateDebut">
-                <label for="dateFin"> et </label>
-                <input type="date" id="dateFin" name="dateFin">            
-            </div>
-            <div id="checkboxSorties">
-                <div id="divOrganisateur">
-                    <input type="checkbox" id="organisateur" name="organisateur" checked>
-                    <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+            <div class="d-flex flex-row">
+                <div class="d-flex flex-column flex-fill">
+                    <div id="Sites" >
+                        <label for="selectSites"> </label>
+                        <select name="sites" id="selectSites">
+                            {% for site in sites %}
+                                <option value="{{ site.nom }}">{{ site.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="divSearch">
+                        <label for="searchText">Le nom de la sortie contient : </label>
+                        <input type="text" id="searchText" name="search">
+                    </div>
+                    <div id="searchDates">
+                        <label for="dateDebut">Entre :</label>
+                        <input type="date" id="dateDebut" name="dateDebut">
+                        <label for="dateFin"> et </label>
+                        <input type="date" id="dateFin" name="dateFin">            
+                    </div>
                 </div>
-                
-                <div id="divInscrit">
-                    <input type="checkbox" id="inscrit" name="inscrit" checked>
-                    <label for="inscrit">Sorties auxquelles je suis inscrit/e</label>
-                </div>
+                <div id="checkboxSorties" class="flex-fill">
+                    <div id="divOrganisateur">
+                        <input type="checkbox" id="organisateur" name="organisateur" checked>
+                        <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+                    </div>
+                    
+                    <div id="divInscrit">
+                        <input type="checkbox" id="inscrit" name="inscrit" checked>
+                        <label for="inscrit">Sorties auxquelles je suis inscrit/e</label>
+                    </div>
 
-                <div id="divPasInscrit">
-                    <input type="checkbox" id="pasInscrit" name="pasInscrit" checked>
-                    <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
-                </div>
+                    <div id="divPasInscrit">
+                        <input type="checkbox" id="pasInscrit" name="pasInscrit" checked>
+                        <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                    </div>
 
-                <div id="divSortiesPassees">
-                    <input type="checkbox" id="passees" name="passees" checked>
-                    <label for="passees">Sorties passées</label>
+                    <div id="divSortiesPassees">
+                        <input type="checkbox" id="passees" name="passees" checked>
+                        <label for="passees">Sorties passées</label>
+                    </div>
                 </div>
-                <input type="submit" value="rechercher">
+                <div class="flex-fill">        
+                    <input type="submit" value="rechercher" >
+                </div>
             </div>
         </form>
+    </div>
 
-        <div id="listeSorties">
+    <div id="listeSorties">
         <table>
             <thead>
                 <tr>
@@ -98,11 +107,8 @@
                 </tr>
             {% endfor %}
             </tbody>
-
-        </table>    
-        </div>
-    
-   </div>
+        </table> 
+    </div>
 </div>
 
 {% endblock %}
