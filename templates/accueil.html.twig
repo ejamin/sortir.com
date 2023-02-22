@@ -10,7 +10,10 @@
    <h2> Accueil </h2>
    <div id="Infos" class="d-flex flex-column align-items-end">
         <p>date : {{ now }} </p>
+   <div id="Infos" class="d-flex flex-column align-items-end">
+        <p>date : {{ now }} </p>
     {% if app.user %}
+        <p> participant : {{ app.user.pseudo }} </p>
         <p> participant : {{ app.user.pseudo }} </p>
     {% endif %}
    </div>
@@ -104,6 +107,8 @@
                 </tr>
             {% endfor %}
             </tbody>
+        </table> 
+    </div>
         </table> 
     </div>
 </div>
