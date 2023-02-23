@@ -20,12 +20,82 @@
         {% endfor %}
     </div>
 
-    <div>
+    <h3 class="centerPage">Modification de la sortie</h3>
+    <div class="container">
         {{ form_start(sortieForm) }}
-        {{ form_widget(sortieForm) }}
-        <button type="button" class="btn btn-lg btn-outline-light mb-1 mt-3 ">
-            <a class="text-decoration-none" href="{{ path('app_sorties') }}">Annuler</a>
-        </button>
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(sortieForm.nom) }}
+                {{ form_widget(sortieForm.nom) }}
+                {{ form_errors(sortieForm.nom) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(sortieForm.dateDebut) }}
+                {{ form_widget(sortieForm.dateDebut) }}
+                {{ form_errors(sortieForm.dateDebut) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(sortieForm.dateFin) }}
+                {{ form_widget(sortieForm.dateFin) }}
+                {{ form_errors(sortieForm.dateFin) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(sortieForm.duree) }}
+                {{ form_widget(sortieForm.duree) }}
+                {{ form_errors(sortieForm.duree) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(sortieForm.nbInscritMax) }}
+                {{ form_widget(sortieForm.nbInscritMax) }}
+                {{ form_errors(sortieForm.nbInscritMax) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(sortieForm.description) }}
+                {{ form_widget(sortieForm.description) }}
+                {{ form_errors(sortieForm.description) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(sortieForm.photo) }}
+                {{ form_widget(sortieForm.photo) }}
+                {{ form_errors(sortieForm.photo) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(sortieForm.idSite) }}
+                {{ form_widget(sortieForm.idSite) }}
+                {{ form_errors(sortieForm.idSite) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(sortieForm.idLieu) }}
+                {{ form_widget(sortieForm.idLieu) }}
+                {{ form_errors(sortieForm.idLieu) }}
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                {{ form_row(sortieForm.publier,{'attr':{'class': 'btnValider'} }) }}
+            </div>
+            <div class="col-6">
+                {{ form_row(sortieForm.enregistrer,{'attr':{'class': 'btnValider'} }) }}
+            </div>
+        </div>
         {{ form_end(sortieForm) }}
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btnValider">
+                    <a class="a_Inscrit" href="{{ path('app_sorties') }}">Annuler</a>
+                </button>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Bienvenue {{ participant.nom }} {{ participant.prenom }}</h1>
+    <h1 class="centerPage">Bienvenue {{ participant.nom }} {{ participant.prenom }}</h1>
 
     <div class="container">
         {% for label,  messages in app.flashes %}
@@ -27,6 +27,9 @@
     </div>
 
     <div class="container">
+        <button class="btnValider">
+            <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
+        </button>
         <div class="row">
             {% for sortie in sorties %}
                 <div class="card">
@@ -51,8 +54,8 @@
 
                         <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                        <small>Date : {{ sortie.dateDebut|date('d-m-Y H:m') }}</small>
-                        <small>Clotûre : {{ sortie.dateFin|date('d-m-Y H:m') }}</small>
+                        <small>Date de l'activité : {{ sortie.dateDebut|date('d-m-Y H:m') }}</small>
+                        <small>Clotûre d'inscription : {{ sortie.dateFin|date('d-m-Y H:m') }}</small>
 
                         <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
@@ -77,20 +80,22 @@
                                         <div class="inscrit-info">
                                             <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
                                             <div class="centerPage">
-                                                <button class="btn btnValider">
-                                                    {% if  "now"|date('d-m-Y') >= sortie.dateDebut|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant not in sortie.idParticipant %}
-                                                        <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : participant.id}) }}">
+                                                {% if  "now"|date('d-m-Y') >= sortie.dateDebut|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant not in sortie.idParticipant %}
+                                                    <button class="btn btnValider">
+                                                     <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : participant.id}) }}">
                                                             <input type="hidden" id="sortieID" value="{{ sortie.id }}">
                                                             <input type="hidden" id="participantID" value="{{ participant.id }}">Je m'inscris
                                                         </a>
-                                                    {% endif %}
-                                                    {% if "now"|date('d-m-Y') >= sortie.dateFin|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
+                                                    </button>
+                                                {% endif %}
+                                                {% if "now"|date('d-m-Y') >= sortie.dateFin|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
+                                                    <button class="btn btnValider">
                                                         <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : participant.id}) }}">
                                                             <input type="hidden" id="sortieID" value="{{ sortie.id }}">
                                                             <input type="hidden" id="participantID" value="{{ participant.id }}">Je me désiste
                                                         </a>
-                                                    {% endif %}
-                                                </button>
+                                                    </button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

@@ -68,9 +68,9 @@ class SortiesController extends AbstractController
                 }
                 # Logique pour différencier les deux boutons enregistrer et publier
                 if($sortieForm->get('enregistrer')->isClicked()){
-                    $sortie->setIdEtat($this->etatsRepository->find(1)); #Créér
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Créér']));
                 }else{
-                    $sortie->setIdEtat($this->etatsRepository->find(2)); #Ouverte
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
                 $this->sortiesRepository->save($sortie,true);
                 $this->addFlash('success', '');
@@ -88,6 +88,8 @@ class SortiesController extends AbstractController
     public function read($id): Response
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $user = $this->getUser();
+        $participants = $this->participantsRepository->findAll();
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
         }
@@ -96,7 +98,7 @@ class SortiesController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException("Sortie inexistante");
         }
-        return $this->render('sorties/read.html.twig', ['sortie' => $sortie]);
+        return $this->render('sorties/read.html.twig', ['sortie' => $sortie,'participant' => $user,'participants' => $participants]);
     }
 
     #[Route('/modification/{id}', name: 'update_sorties')]
@@ -118,15 +120,16 @@ class SortiesController extends AbstractController
             try{
                 #Logique pour différencier les deux boutons enregistrer et publier
                 if($sortieForm->get('enregistrer')->isClicked()){
-                    $sortie->setIdEtat($this->etatsRepository->find(1)); #Créér
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Créér']));
                 }else{
-                    $sortie->setIdEtat($this->etatsRepository->find(2)); #Ouverte
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
                 $this->sortiesRepository->save($sortie,true);
                 $this->addFlash('success', '');
             } catch (\Exception $exception) {
                 $this->addFlash('error', '');
             }
+            return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
         }
 
         return $this->render('sorties/update.html.twig',['sortieForm' => $sortieForm->createView()]);
@@ -151,12 +154,13 @@ class SortiesController extends AbstractController
         if ($annulerForm->isSubmitted() && $annulerForm->isValid()) {
             try{
                 //$sortie->setIdEtat($this->etatsRepository->find(Etats::ETAT_PUBLIE));
-                $sortie->setIdEtat($this->etatsRepository->find(4));
+                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Annulée']));
                 $this->sortiesRepository->save($sortie,true);
                 $this->addFlash('success', '');
             } catch (\Exception $exception) {
                 $this->addFlash('error', '');
             }
+            return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
         }
         return $this->render('sorties/delete.html.twig', ['annulerForm' => $annulerForm->createView()]);
     }
@@ -173,6 +177,10 @@ class SortiesController extends AbstractController
 
         $sortie = $this->sortiesRepository->find($sortieID);
         $participant = $this->participantsRepository->find($participantID);
+
+        if(!$sortie && !$participant) {
+            throw $this->createNotFoundException("Non autorisé !");
+        }
 
         $sortie->addIdParticipant($participant);
         $entityManager->persist($sortie);
@@ -192,6 +200,10 @@ class SortiesController extends AbstractController
 
         $sortie = $this->sortiesRepository->find($sortieID);
         $participant = $this->participantsRepository->find($participantID);
+
+        if(!$sortie && !$participant) {
+            throw $this->createNotFoundException("Non autorisé !");
+        }
 
         $sortie->removeIdParticipant($participant);
         $entityManager->persist($sortie);
