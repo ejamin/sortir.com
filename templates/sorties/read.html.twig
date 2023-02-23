@@ -55,13 +55,13 @@
         <div class="row">
             <div class="col-6">
                 {% if sortie.idSite.nom == 'ENI Rennes' %}
-                    <b>Organisé par : </b><span class="tag tag-rennes">{{ sortie.idSite.nom }}</span>
+                    <b>Organisé par : </b><a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-rennes">{{ sortie.idSite.nom }}</span></a>
                 {% elseif sortie.idSite.nom == 'ENI Nantes' %}
-                    <b>Organisé par : </b><span class="tag tag-nantes">{{ sortie.idSite.nom }}</span>
+                    <b>Organisé par : </b><a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-nantes">{{ sortie.idSite.nom }}</span></a>
                 {% elseif sortie.idSite.nom == 'ENI Quimper' %}
-                    <b>Organisé par : </b><span class="tag tag-quimper">{{ sortie.idSite.nom }}</span>
+                    <b>Organisé par : </b><a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-quimper">{{ sortie.idSite.nom }}</span></a>
                 {% elseif sortie.idSite.nom == 'ENI Niort' %}
-                    <b>Organisé par : </b><span class="tag tag-niort">{{ sortie.idSite.nom }}</span>
+                    <b>Organisé par : </b><a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-niort">{{ sortie.idSite.nom }}</span></a>
                 {% endif %}
             </div>
             <div class="col-6">
