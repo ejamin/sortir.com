@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Sorties par Sites {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('css/sortie.css')}}">
+{% endblock %}
+
+{% block body %}
+    <div>
+        {% for label,  messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    {% if label == "success" %}
+                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
+                    {% elseif label == "warning" %}
+                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
+                    {% elseif label == "error" %}
+                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <h3 class="centerPage">Listing des sorties par campus de l'{{ site.nom }}</h3>
+    <div class="container">
+        <div class="row">
+            {% for sortie in site.idSortie %}
+                <div class="card">
+                    <div class="card-header">
+                        <a class="text-decoration-none" href="{{ path('read_sorties',{id : sortie.id}) }}">
+                            <img src="{{ asset('image/photoVisite/' ~ sortie.photo) }}" class="card-img-top" alt="{{ sortie.nom }}" />
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if sortie.idSite.nom == 'ENI Rennes' %}
+                            <span class="tag tag-rennes">{{ sortie.idSite.nom }}</span>
+                        {% elseif sortie.idSite.nom == 'ENI Nantes' %}
+                            <span class="tag tag-nantes">{{ sortie.idSite.nom }}</span>
+                        {% elseif sortie.idSite.nom == 'ENI Quimper' %}
+                            <span class="tag tag-quimper">{{ sortie.idSite.nom }}</span>
+                        {% elseif sortie.idSite.nom == 'ENI Niort' %}
+                            <span class="tag tag-niort">{{ sortie.idSite.nom }}</span>
+                        {% endif %}
+
+                        <h4>{{ sortie.nom }}</h4>
+                        <small>{{ sortie.description }}</small>
+
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+
+                        <small>Date de l'activité : {{ sortie.dateDebut|date('d-m-Y H:m') }}</small>
+                        <small>Clotûre d'inscription : {{ sortie.dateFin|date('d-m-Y H:m') }}</small>
+
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+
+                        <small>A {{ sortie.idLieu.nom }}</small>
+                        <small>Au {{ sortie.idLieu.rue }}, {{ sortie.idLieu.idVille.codePostal}} {{ sortie.idLieu.idVille.nom}}</small>
+
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+
+                        <div class="inscrit">
+                            <div class="container">
+                                {% if sortie.idEtat.libelle != "Créér" %}
+                                    <div class="row">
+                                        <div class="inscrit-info">
+                                            <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
+                                        </div>
+                                    </div>
+                                {% elseif sortie.idEtat.libelle == "Créér" %}
+                                    <small class="text-danger">Pas d'inscription pour le moment</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+
+                        <div class="user">
+                            <img src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo" alt="user" />
+                            <div class="user-info">
+                                <h5>{{ sortie.idOrganisateur.nom }} {{ sortie.idOrganisateur.prenom }}</h5>
+                                <small>Etat : {{ sortie.idEtat.libelle }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javaScript %}
+    <script src="{{ asset('JavaScript/appSupprToken.js') }}"></script>
+{% endblock %}
