@@ -8,6 +8,7 @@ use App\Form\SortieFormType;
 use App\Repository\EtatsRepository;
 use App\Repository\ParticipantsRepository;
 use App\Repository\SortiesRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,9 @@ class SortiesController extends AbstractController
     {
         #Formulaire de recherche
         $sorties = $this->sortiesRepository->findAll();
-        return $this->render('sorties/index.html.twig', ['sorties' => $sorties]);
+        $user = $this->getUser();
+
+        return $this->render('sorties/index.html.twig', ['sorties' => $sorties,'participant' => $user]);
     }
 
     #[Route('/création', name: 'create_sorties')]
@@ -147,6 +150,7 @@ class SortiesController extends AbstractController
 
         if ($annulerForm->isSubmitted() && $annulerForm->isValid()) {
             try{
+                //$sortie->setIdEtat($this->etatsRepository->find(Etats::ETAT_PUBLIE));
                 $sortie->setIdEtat($this->etatsRepository->find(4));
                 $this->sortiesRepository->save($sortie,true);
                 $this->addFlash('success', '');
@@ -159,47 +163,41 @@ class SortiesController extends AbstractController
 
     #-- INSCRIPTION / DESISTER --#
 
-    #[Route('/inscription', name: 'inscription_sorties')]
-    public function inscription(Request $request)
+    #[Route('/inscription/{sortieID}/{participantID}', name: 'sortie_inscription')]
+    public function inscriptions($sortieID,$participantID,EntityManagerInterface $entityManager)
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
         }
 
-        #Récupération de l'ID de la sortie et du participant lors du click
-        $idSortie = (int)$request->query->get('idSortie');
-        $idParticipant = (int)$request->query->get('idParticipant');
-        $sortie = $this->sortiesRepository->find($idSortie);
-        $participant = $this->participantsRepository->find($idParticipant);
+        $sortie = $this->sortiesRepository->find($sortieID);
+        $participant = $this->participantsRepository->find($participantID);
 
-        #Ajout en base de donnée
         $sortie->addIdParticipant($participant);
-        $this->sortiesRepository->save($sortie);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
 
-        return $this->render('appInscritDesister/ajax.html.twig',['nbInscrit' => $sortie->getIdParticipant()->count(),'sortie' => $sortie]);
+        return $this->redirectToRoute('app_sorties');
     }
 
-    #[Route('/desister', name: 'desister_sorties')]
-    public function desister(Request $request)
+
+    #[Route('/desister/{sortieID}/{participantID}', name: 'sortie_desister')]
+    public function desisters($sortieID,$participantID,EntityManagerInterface $entityManager)
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
         }
 
-        #Récupération de l'ID de la sortie et du participant lors du click
-        $idSortie = (int)$request->query->get('idSortie');
-        $idParticipant = (int)$request->query->get('idParticipant');
-        $sortie = $this->sortiesRepository->find($idSortie);
-        $participant = $this->participantsRepository->find($idParticipant);
+        $sortie = $this->sortiesRepository->find($sortieID);
+        $participant = $this->participantsRepository->find($participantID);
 
-        #Suppression en base de donnée
         $sortie->removeIdParticipant($participant);
-        $this->sortiesRepository->save($sortie);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
 
-        return $this->render('appInscritDesister/ajax.html.twig',['nbInscrit' => $sortie->getIdParticipant()->count(),'sortie' => $sortie]);
-
+        return $this->redirectToRoute('app_sorties');
     }
 
 }

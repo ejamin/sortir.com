@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block body %}
+    <h1>Bienvenue {{ participant.nom }} {{ participant.prenom }}</h1>
+
     <div class="container">
         {% for label,  messages in app.flashes %}
             {% for message in messages %}
@@ -23,33 +25,6 @@
             {% endfor %}
         {% endfor %}
     </div>
-{#
-    <div class="container">
-        <div class="row">
-            {% for sortie in sorties %}
-                <a class="text-decoration-none" href="{{ path('read_sorties',{id : sortie.id}) }}">
-                    <img src="{{ asset('image/photoVisite/' ~ sortie.photo) }}" class="card-img-top" alt="{{ sortie.nom }}" />
-                </a>
-                <p>{{ sortie.nom }}</p>
-                <p>Date : {{ sortie.dateDebut|date('d-m-Y H:m') }}</p>
-                <p>Clotûre : {{ sortie.dateFin|date('d-m-Y H:m') }}</p>
-                <p>Durée : {{ sortie.duree }}</p>
-                <p>Nombre d'inscrit : 0 / {{ sortie.nbInscritMax }}</p>
-                <p>Campus : {{ sortie.idSite.nom }}</p>
-                <p>A {{ sortie.idLieu.nom }}</p>
-                <p>Au {{ sortie.idLieu.rue }}, {{ sortie.idLieu.idVille.codePostal}} {{ sortie.idLieu.idVille.nom}}</p>
-                {% if sortie.idLieu.latitude != null %}
-                    <p>{{ sortie.idLieu.latitude }}</p>
-                {% endif %}
-                {% if sortie.idLieu.longitude != null %}
-                    <p>{{ sortie.idLieu.longitude }}</p>
-                {% endif %}
-                <p>Etat : {{ sortie.idEtat.libelle }}</p>
-            {% endfor %}
-        </div>
-    </div>
-#}
-
 
     <div class="container">
         <div class="row">
@@ -86,14 +61,47 @@
 
                         <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                        <div class="inscription">
-                            <div class="inscription-info">
-                                <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
-                                <small>BOUTON</small>
+                        <div class="inscrit">
+                            <div class="container">
+                                {% if sortie.idEtat.libelle != "Créér" %}
+                                    <div class="row">
+                                        <div id="estInscrit-{{ sortie.id }}">
+                                            {% if participant in sortie.idParticipant %}
+                                                <small class="text-success">J'y serai !</small>
+                                            {% else %}
+                                                <small class="text-dark">Je n'y serai pas !</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="inscrit-info">
+                                            <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
+                                            <div class="centerPage">
+                                                <button class="btn btnValider">
+                                                    {% if  "now"|date('d-m-Y') >= sortie.dateDebut|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant not in sortie.idParticipant %}
+                                                        <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : participant.id}) }}">
+                                                            <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                                            <input type="hidden" id="participantID" value="{{ participant.id }}">Je m'inscris
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if "now"|date('d-m-Y') >= sortie.dateFin|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
+                                                        <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : participant.id}) }}">
+                                                            <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                                            <input type="hidden" id="participantID" value="{{ participant.id }}">Je me désiste
+                                                        </a>
+                                                    {% endif %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif sortie.idEtat.libelle == "Créér" %}
+                                    <small class="text-danger">Pas d'inscription pour le moment</small>
+                                {% endif %}
                             </div>
                         </div>
 
                         <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+
                         <div class="user">
                             <img src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo" alt="user" />
                             <div class="user-info">
@@ -107,5 +115,9 @@
         </div>
     </div>
 
+
+{% endblock %}
+
+{% block javaScript %}
 
 {% endblock %}
