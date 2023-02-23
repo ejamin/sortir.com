@@ -60,7 +60,7 @@ class AuthentificateurController extends AbstractController
                 )
             );
             $this->participantsRepository->save($participant,true);
-            return $this->redirectToRoute("app_participant_liste");
+            return $this->redirectToRoute("app_accueil");
         }
 
         return $this->render('participants/create.html.twig', [
