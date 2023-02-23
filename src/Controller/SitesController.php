@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sites;
 use App\Repository\SitesRepository;
+use App\Repository\SortiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +17,12 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 class SitesController extends AbstractController
 {
     private SitesRepository $sitesRepository;
+    private SortiesRepository $sortiesRepository;
 
-    public function __construct(SitesRepository $sitesRepository)
+    public function __construct(SitesRepository $sitesRepository,SortiesRepository $sortiesRepository)
     {
         $this->sitesRepository = $sitesRepository;
+        $this->sortiesRepository = $sortiesRepository;
     }
     #[Route('/', name: 'app_sites')]
     public function index(): Response
@@ -99,5 +102,25 @@ class SitesController extends AbstractController
         }
 
         return $this->redirectToRoute('app_sites');
+    }
+
+    #[Route('/{id}', name: 'read_sites')]
+    public function read($id): Response
+    {
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
+
+        $sorties = $this->sortiesRepository->findAll();
+        $site = $this->sitesRepository->find($id);
+
+        if (!$site) {
+            throw $this->createNotFoundException("Siteinexistante");
+        }
+
+
+
+        return $this->render('sites/read.html.twig', ['site' => $site,'sorties' => $sorties]);
     }
 }

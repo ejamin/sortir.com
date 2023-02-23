@@ -28,6 +28,9 @@
                     <p>{{ site.id }} : {{ site.nom }}</p>
                 </div>
                 <div class="col-3">
+                    <a class="btn btnDelete" href="{{ path('read_sites',{id: site.id}) }}">
+                        <span class="material-icons md-24">read_more</span>
+                    </a>
                     <a class="btn btnDelete" href="{{ path('delete_sites',{id: site.id, _csrf_token: csrf_token('app_delete_sites')}) }}">
                         <span class="material-icons md-24">delete</span>
                     </a>

@@ -90,6 +90,16 @@ class EtatsController extends AbstractController
                 $this->addFlash('error', '');
             }
         }
+        if(!$this->etatsRepository->findBy(['libelle' => 'Archivée'])) {
+            $etat = new Etats();
+            try{
+                $etat->setLibelle('Archivée');
+                $this->etatsRepository->save($etat,true);
+                $this->addFlash('success', '');
+            } catch (\Exception $exception) {
+                $this->addFlash('error', '');
+            }
+        }
 
         $etats = $this->etatsRepository->findAll();
 

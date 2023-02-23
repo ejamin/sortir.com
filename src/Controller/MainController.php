@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\EtatsRepository;
 use App\Repository\SitesRepository;
 use App\Repository\SortiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,15 +15,19 @@ class MainController extends AbstractController
 {   
     private SortiesRepository $sortiesRepository;
     private SitesRepository $sitesRepository;
+    private EtatsRepository $etatsRepository;
 
-    public function __construct(SortiesRepository $sortiesRepository, SitesRepository $sitesRepository){
+    public function __construct(SortiesRepository $sortiesRepository, SitesRepository $sitesRepository,EtatsRepository $etatsRepository){
         $this->sortiesRepository = $sortiesRepository;
         $this->sitesRepository = $sitesRepository;
+        $this->etatsRepository = $etatsRepository;
     }
 
     #[Route('/', name: 'app_accueil')]
     public function index(Request $request): Response
     {
+        $this->changementEtat();
+
         $sorties = $this->sortiesRepository->findAll();
         $sites = $this->sitesRepository->findAll();      
 
@@ -118,4 +123,42 @@ class MainController extends AbstractController
         }
         return false;
     }
+
+    public function changementEtat() #Créér - Ouverte - Clôturée - Activitée en cours - Passée - Annulée - Archivée
+    {
+        $sorties = $this->sortiesRepository->findAll();
+        $now = new \DateTime('now');
+        foreach ($sorties as $sortie) {
+            $minutesToAdd = $sortie->getDuree();
+            if($now >= $sortie->getDateDebut() && $now <= ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes"))) {
+                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Activitée en cours']));
+                $this->sortiesRepository->save($sortie, true);
+                return; break;
+            }
+            if($now > $sortie->getDateFin()) {
+                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Clôturée']));
+                $this->sortiesRepository->save($sortie, true);
+                return; break;
+            }
+            if($now > ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes")) && $now <= ($sortie->getDateDebut()->modify("+43800 minutes"))) {
+                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Passée']));
+                $this->sortiesRepository->save($sortie, true);
+                return; break;
+            }
+            if($now > ($sortie->getDateDebut()->modify("+43800 minutes"))) {
+                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Archivée']));
+                $this->sortiesRepository->save($sortie, true);
+                return; break;
+            }
+
+
+
+
+
+
+
+
+        }
+    }
+
 }
