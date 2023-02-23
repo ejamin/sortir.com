@@ -75,7 +75,7 @@
                 </div>
                 <div class="flex-fill align-self-center">                              
                         {{ form_label(form.search) }}
-                        {{ form_widget(form.search) }}        
+                        {{ form_widget(form.search, { 'attr': {'class': 'btn btn-outline-success'} }) }}    
                 </div>
             </div>            
         {{ form_end(form) }}
@@ -118,9 +118,9 @@
                         <a href="{{ path('update_sorties', { 'id': sortie.id })}}">Modifier</a> - 
                         <a href="{{ path('publish_sorties', { 'id': sortie.id })}}">Publier</a>
                     {% elseif (app.user) and (estInscrit == false) %}
-                        <a href="{{ path('inscription_sorties', { 'id': sortie.id })}}">S'inscrire</a>
+                        <a href="{{ path('sortie_inscription', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">S'inscrire</a>
                     {% elseif (app.user) and estInscrit == true %}
-                        <a href="{{ path('desister_sorties', { 'id': sortie.id })}}">Se désister</a>
+                        <a href="{{ path('sortie_desister', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">Se désister</a>
                     {% endif %}
                     </td>
                 </tr>
@@ -128,8 +128,8 @@
             </tbody>
         </table> 
     </div>
-        </table> 
-    </div>
+    <a href="{{ path('create_sorties') }}" class="btn btn-outline-success">Créer une sortie</a>
 </div>
+
 
 {% endblock %}
