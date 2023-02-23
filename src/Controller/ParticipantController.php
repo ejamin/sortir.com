@@ -31,10 +31,10 @@ class ParticipantController extends AbstractController
         return $this->render('participants/index.html.twig', ['participants' => $participants]);
     }
 
-    #[Route('/{id}', name: 'show')]
+    #[Route('/{id}', name: 'app_participant_show')]
     public function show($id): Response {
         $participant = $this->participantsRepository->find($id);
 
         return $this->render('participants/show.html.twig', ['participant' => $participant]);
-    }
+    }    
 }

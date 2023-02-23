@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Sites;
 
 class ParticipantsFormType extends AbstractType
 {
@@ -26,11 +28,16 @@ class ParticipantsFormType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passes ne sont pas identiques',
-                'options' => ['attr' => ['class' => 'password-field']],
+                'options' => ['attr' => ['class' => 'password-field d-fill d-flex d-row']],
                 'required' => true,
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmer'],
+                'first_options'  => ['label' => 'Mot de passe', 'attr' => ['class'=> 'flex-fill align-self-center p-2']],
+                'second_options' => ['label' => 'Confirmer', 'attr' => ['class'=> 'flex-fill align-self-center p-2']]
             ])
+            ->add('idSites', EntityType::class, [
+                'class' => Sites::class,
+                'choice_label' => function ($site) {
+                    return $site->getNom();
+                }])
             ->add('image', FileType::class, ['mapped' => false, 'required' => false, 'constraints' => [new Image(['maxSize' => '7024k', 'mimeTypesMessage' => "Format de l'image non supporter"])]])
             ->add('save', SubmitType::class,["label" => "Enregistrer"]);
     }

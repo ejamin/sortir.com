@@ -6,17 +6,86 @@
 
 {% block body %}
 
-<div class="row mt-5">
-   <h2> Profil {{ participant.pseudo }} </h2>
-
-   <div id="AffichageParticipant">
-        <p>Prenom : {{ participant.prenom }} </p>
-        <p>Nom : {{ participant.nom }} </p>        
-        <p>Telephone : {{ participant.telephone }} </p>
-        <p>Email : {{ participant.email }} </p>
-        {# <p>Ville de rattachement : {{ participant.sites.nom }} </p> #}
-
+<div class="w-75 p-3 mx-auto d-flex flex-column">
+   <div id="profil" class="d-flex flex-row">
+      <div id="profilImage" class="d-flex p-3">
+         {% if participant.image %}
+            <img src="{{ asset('image/photoParticipant/' ~ participant.image) }}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="{{ participant.nom }}" />
+         {% else %}
+            <img src="{{ asset('image/default_profile.jpg') }}" alt="defaultPicture" class="img-fluid rounded" style="width: 100px; height: 100px;" />    
+         {% endif %}
+      </div>
+      <div id="profilInfos" class="d-flex flex-column flex-fill p-3">
+         <div class="d-flex flex-column align-items-center">
+            <h2> Profil {{ participant.pseudo }} </h2>
+         </div>
+         <div id="AffichageParticipant">
+            <p>Prenom : {{ participant.prenom }} </p>
+            <p>Nom : {{ participant.nom }} </p>        
+            <p>Telephone : {{ participant.telephone }} </p>
+            <p>Email : {{ participant.email }} </p>
+            <p>Ville de rattachement : {{ (participant.idSites)? participant.idSites.nom : '' }} </p>
+         </div>
+         {% if participant.id == app.user.id %}
+            <a class="btn btn-outline-success" href="{{ path("update_participant",{id : app.user.id})}}">Modifier mon profil</a>
+         {% endif %}
+         {% if is_granted('ROLE_ADMIN') %}      
+            {# <a class="btn btn-outline-success" href="{{ path("desactiver_participant",{id : app.user.id})}}">Désactiver ce participant</a>
+            <a class="btn btn-outline-success" href="{{ path("delete_participant",{id : app.user.id})}}">Supprimer ce participant</a> #}
+         {% endif %}
+      </div>
    </div>
+   <div id="listeSorties">
+      <h3>Liste des sorties</h3>
+      <table class="table table-hover">
+         <thead>
+               <tr>
+                  <th>Nom de la sortie</th>
+                  <th>Date de la sortie</th>
+                  <th>Clôture</th>
+                  <th>Inscrits/places</th>
+                  <th>Etat</th>
+                  <th>Inscrit</th>
+                  <th>Organisateur</th>
+                  <th>Actions</th>
+               </tr>
+         </thead>
+         
+         <tbody>
+         {% if participant.idSortie %}
+            {% for sortie in participant.idSortie %}  
+               {% if app.user in sortie.idParticipant %} 
+                  {% set estInscrit = true %}
+               {% else %}         
+                  {% set estInscrit = false %}
+               {% endif %}
+               <tr>
+                  <td>{{ sortie.nom }}</td>
+                  <td>{{ sortie.dateDebut | date("m/d/Y H:i:s") }}</td>
+                  <td>{{ sortie.dateFin | date("m/d/Y H:i:s") }}</td>
+                  <td>{{ sortie.idParticipant| length }} / {{ sortie.nbInscritMax }}</td>
+                  <td>{{ sortie.idEtat.libelle }}</td>
+                  <td>{{ (estInscrit) ? 'X' : ' ' }}</td>
+                  <td>{{ sortie.idOrganisateur.pseudo }}</td>
+                  
+                  <td><a href="{{ path('read_sorties', { 'id': sortie.id })}}">Afficher</a> - 
+                  {% if (app.user == sortie.idOrganisateur) and (sortie.dateDebut < date()) %}
+                        <a href="{{ path('delete_sorties', { 'id': sortie.id })}}">Annuler</a>
+                  {% elseif (app.user == sortie.idOrganisateur) and (sortie.dateDebut < date()) and (sorite.idEtat.id == 1) %}
+                        <a href="{{ path('update_sorties', { 'id': sortie.id })}}">Modifier</a> - 
+                        <a href="{{ path('publish_sorties', { 'id': sortie.id })}}">Publier</a>
+                  {% elseif (app.user) and (estInscrit == false) %}
+                        <a href="{{ path('sortie_inscription', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">S'inscrire</a>
+                  {% elseif (app.user) and estInscrit == true %}
+                        <a href="{{ path('sortie_desister', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">Se désister</a>
+                  {% endif %}
+                  </td>
+               </tr>
+            {% endfor %}
+         {% endif %}
+         </tbody>
+      </table> 
+    </div>
 </div>
 
 {% endblock %}

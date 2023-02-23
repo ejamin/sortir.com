@@ -53,6 +53,19 @@ class AuthentificateurController extends AbstractController
         $participantForm->handleRequest($request);
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
+            #Enregistrement de l'image
+            $file = $participantForm->get('image')->getData();
+            /**
+             * @var UploadedFile $file
+             */
+            if ($file) {
+                $newFileName = $participant->getNom() . '-' . uniqid() . '.' . $file->guessExtension();
+                $file->move($this->getParameter('upload_image_participant'), $newFileName);
+                $participant->setImage($newFileName);
+            }else{
+                $participant->setImage('public/image/default_profile.png');
+            }
+
             $participant->setPassword(
                 $userPasswordHasher->hashPassword(
                     $participant,
@@ -68,7 +81,7 @@ class AuthentificateurController extends AbstractController
         ]);
     }
 
-    #[Route('/mon-profil/{id}', name: 'update_participant')]
+    #[Route('/mon-profil/update/{id}', name: 'update_participant')]
     public function update(Request $request, UserPasswordHasherInterface $userPasswordHasher, $id): Response {
         $participant = $this->participantsRepository->find($id);
         $user = $this->getUser();
@@ -78,7 +91,6 @@ class AuthentificateurController extends AbstractController
         }
 
         $participantForm = $this->createForm(ParticipantsFormType::class,$participant);
-
         $participantForm->handleRequest($request);
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){

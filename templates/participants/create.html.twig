@@ -6,37 +6,90 @@
 
 {% block body %}
 
-<div class="row mt-5">
+<div class="w-75 p-3 mx-auto">
    <h2> Mon profil </h2>
-   <div id="formParticipant" class="d-flex flex-column">
-   {{ form_start(participantForm) }}
-      <div id="divPseudo" class="d-fill d-row">
-         <div>
-            {{ form_label(participantForm.pseudo) }}
-         </div>
-         <div>
-            {{ form_widget(participantForm.pseudo) }}   
-         </div>
+   {{ form_start(participantForm) }}   
+   <div id="formParticipant" class="d-flex flex-row w-100">      
+      <div id="divImage" class="w-25 d-flex flex-row">         
+            <img src="{{ asset('image/default_profile.jpg') }}" alt="defaultPicture" class="img-fluid rounded" style="width: 100px; height: 100px;" />
       </div>
-      <div id="divPrenom" class="d-fill d-row">
-         <div>
-            {{ form_label(participantForm.prenom) }}
+      <div id="formParticipant" class="w-75 d-fill d-flex flex-column">
+         <div id="divPseudo" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.pseudo) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.pseudo) }}   
+            </div>
          </div>
-         <div>
-            {{ form_widget(participantForm.prenom) }}   
+         <div id="divPrenom" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.prenom) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.prenom) }}   
+            </div>
          </div>
-      </div>
-      <div id="divNom" class="d-fill d-row">
-         <div>
-            {{ form_label(participantForm.nom) }}
+         <div id="divNom" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.nom) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.nom) }}   
+            </div>
          </div>
-         <div>
-            {{ form_widget(participantForm.nom) }}   
+         <div id="divTelephone" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.telephone) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.telephone) }}   
+            </div>
          </div>
-      </div>
-                        
+         <div id="divEmail" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.email) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.email) }}   
+            </div>
+         </div>
+         <div id="divMotDePasse" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.password.first) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2">                
+               {{ form_widget(participantForm.password.first) }} 
+            </div>
+         </div>
+         <div id="divMotDePasseConfirm" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.password.second) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.password.second) }} 
+               
+            </div>
+         </div>
+         <div id="divCampus" class="d-fill d-flex d-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.idSites) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.idSites) }}   
+            </div>
+         </div>
+         <div id="divImage" class="d-fill d-flex flex-row">
+            <div class="align-self-center p-2"> 
+               {{ form_label(participantForm.image) }}
+            </div>
+            <div class="flex-grow-1 align-self-center p-2"> 
+               {{ form_widget(participantForm.image) }}   
+            </div>
+         </div>
+      </div>                      
+   </div>        
    {{ form_end(participantForm) }}
-   </div>
 </div>
 
 {% endblock %}
