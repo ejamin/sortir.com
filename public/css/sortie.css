@@ -138,13 +138,13 @@ table {
     color: #545d7a;
 }
 
-.inscription {
+.inscrit {
     display: flex;
     margin-top: auto;
 }
-.inscription-info h5 {
+.inscrit-info h5 {
     margin: 0;
 }
-.inscription-info small {
+.inscrit-info small {
     color: #545d7a;
 }
