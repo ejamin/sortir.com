@@ -82,6 +82,19 @@ class AuthentificateurController extends AbstractController
         $participantForm->handleRequest($request);
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
+            #Enregistrement de l'image
+            $file = $participantForm->get('image')->getData();
+            /**
+             * @var UploadedFile $file
+             */
+            if ($file) {
+                $newFileName = $participant->getNom() . '-' . uniqid() . '.' . $file->guessExtension();
+                $file->move($this->getParameter('upload_image_participant'), $newFileName);
+                $participant->setImage($newFileName);
+            }else{
+                $participant->setImage('public/image/default_profile.png');
+            }
+
             $participant->setPassword(
                 $userPasswordHasher->hashPassword(
                     $participant,
@@ -89,7 +102,7 @@ class AuthentificateurController extends AbstractController
                 )
             );
             $this->participantsRepository->save($participant,true);
-            return $this->redirectToRoute("app_participant_liste");
+            return $this->redirectToRoute("app_accueil");
         }
 
         return $this->render('participants/update.html.twig', [

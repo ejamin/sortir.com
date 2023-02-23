@@ -8,8 +8,35 @@
 
 <div class="row mt-5">
    <h2> Mon profil </h2>
-
-   {{ form(participantForm) }}
+   <div id="formParticipant" class="d-flex flex-column">
+   {{ form_start(participantForm) }}
+      <div id="divPseudo" class="d-fill d-row">
+         <div>
+            {{ form_label(participantForm.pseudo) }}
+         </div>
+         <div>
+            {{ form_widget(participantForm.pseudo) }}   
+         </div>
+      </div>
+      <div id="divPrenom" class="d-fill d-row">
+         <div>
+            {{ form_label(participantForm.prenom) }}
+         </div>
+         <div>
+            {{ form_widget(participantForm.prenom) }}   
+         </div>
+      </div>
+      <div id="divNom" class="d-fill d-row">
+         <div>
+            {{ form_label(participantForm.nom) }}
+         </div>
+         <div>
+            {{ form_widget(participantForm.nom) }}   
+         </div>
+      </div>
+                        
+   {{ form_end(participantForm) }}
+   </div>
 </div>
 
 {% endblock %}
