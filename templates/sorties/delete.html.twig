@@ -19,7 +19,81 @@
             {% endfor %}
         {% endfor %}
     </div>
-    <div>
-        <p>A</p>
+
+    <h3 class="centerPage">Création d'une sortie</h3>
+    <div class="container">
+        {{ form_start(annulerForm) }}
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(annulerForm.nom) }}
+                {{ form_widget(annulerForm.nom) }}
+                {{ form_errors(annulerForm.nom) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(annulerForm.dateDebut) }}
+                {{ form_widget(annulerForm.dateDebut) }}
+                {{ form_errors(annulerForm.dateDebut) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(annulerForm.dateFin) }}
+                {{ form_widget(annulerForm.dateFin) }}
+                {{ form_errors(annulerForm.dateFin) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(annulerForm.duree) }}
+                {{ form_widget(annulerForm.duree) }}
+                {{ form_errors(annulerForm.duree) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(annulerForm.nbInscritMax) }}
+                {{ form_widget(annulerForm.nbInscritMax) }}
+                {{ form_errors(annulerForm.nbInscritMax) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(annulerForm.description) }}
+                {{ form_widget(annulerForm.description) }}
+                {{ form_errors(annulerForm.description) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                {{ form_label(annulerForm.idSite) }}
+                {{ form_widget(annulerForm.idSite) }}
+                {{ form_errors(annulerForm.idSite) }}
+            </div>
+            <div class="col-6">
+                {{ form_label(annulerForm.idLieu) }}
+                {{ form_widget(annulerForm.idLieu) }}
+                {{ form_errors(annulerForm.idLieu) }}
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(annulerForm.motif) }}
+                {{ form_widget(annulerForm.motif) }}
+                {{ form_errors(annulerForm.motif) }}
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(annulerForm.valider,{'attr':{'class': 'btnValider'} }) }}
+            </div>
+        </div>
+        {{ form_end(annulerForm) }}
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btnValider">
+                    <a class="a_Inscrit" href="{{ path('app_sorties') }}">Annuler</a>
+                </button>
+            </div>
+        </div>
     </div>
 {% endblock %}
