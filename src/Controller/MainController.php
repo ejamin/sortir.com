@@ -102,7 +102,7 @@ class MainController extends AbstractController
             }
             if($valide && isset($data['passees'])){
                 if($data['passees'] == true){
-                    if($sortie->getIdEtat()->id == 5){
+                    if($sortie->getIdEtat()->getId() == 5){
                         $valide = true;
                     }else $valide = false;
                 }
