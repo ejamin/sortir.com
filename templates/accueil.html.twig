@@ -104,8 +104,8 @@
                 {% endif %}
                 <tr>
                     <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateDebut | date("m/d/Y H:i:s") }}</td>
-                    <td>{{ sortie.dateFin | date("m/d/Y H:i:s") }}</td>
+                    <td>{{ sortie.dateDebut | date("d/m/Y H:i:s") }}</td>
+                    <td>{{ sortie.dateFin | date("d/m/Y H:i:s") }}</td>
                     <td>{{ sortie.idParticipant| length }} / {{ sortie.nbInscritMax }}</td>
                     <td>{{ sortie.idEtat.libelle }}</td>
                     <td>{{ (estInscrit) ? 'X' : ' ' }}</td>
@@ -114,12 +114,12 @@
                     <td><a href="{{ path('read_sorties', { 'id': sortie.id })}}">Afficher</a> - 
                     {% if (app.user == sortie.idOrganisateur) and (sortie.dateDebut < date()) %}
                         <a href="{{ path('delete_sorties', { 'id': sortie.id })}}">Annuler</a>
-                    {% elseif (app.user == sortie.idOrganisateur) and (sortie.dateDebut < date()) and (sorite.idEtat.id == 1) %}
+                    {% elseif (app.user == sortie.idOrganisateur) and (sortie.idEtat.id == 1) %}
                         <a href="{{ path('update_sorties', { 'id': sortie.id })}}">Modifier</a> - 
-                        <a href="{{ path('publish_sorties', { 'id': sortie.id })}}">Publier</a>
-                    {% elseif (app.user) and (estInscrit == false) %}
+                        <a href="{{ path('sortie_publier', { 'sortieID': sortie.id })}}">Publier</a>
+                    {% elseif (app.user) and (estInscrit == false) and (sortie.idEtat.id == 2) %}
                         <a href="{{ path('sortie_inscription', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">S'inscrire</a>
-                    {% elseif (app.user) and estInscrit == true %}
+                    {% elseif (app.user) and estInscrit == true and (sortie.idEtat.id == 2) %}
                         <a href="{{ path('sortie_desister', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">Se désister</a>
                     {% endif %}
                     </td>
