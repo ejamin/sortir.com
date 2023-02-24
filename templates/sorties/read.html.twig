@@ -116,7 +116,7 @@
                             </a>
                         </button>
                     {% endif %}
-                    {% if "now"|date('d-m-Y') >= sortie.dateFin|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
+                    {% if sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
                         <button class="btn btnValider">
                             <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : participant.id}) }}">
                                 <input type="hidden" id="sortieID" value="{{ sortie.id }}">
@@ -136,7 +136,7 @@
             <p><b>Liste des participants inscrit :</b></p>
             {% for participant in participants %}
                 {% if participant in sortie.idParticipant %}
-                    <small><b>Nom :</b> {{ participant.nom }} {{ participant.prenom }}</small>
+                    <small><b>Nom :</b> <a class="a_profil" href="{{ path('app_participant_show',{id : sortie.idOrganisateur.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a> </small>
                 {% endif %}
             {% endfor %}
         </div>
