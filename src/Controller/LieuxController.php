@@ -32,7 +32,7 @@ class LieuxController extends AbstractController
     #[Route('/', name: 'app_lieux')]
     public function index(Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux administrateurs !");
         }
@@ -67,7 +67,7 @@ class LieuxController extends AbstractController
     #[Route('/modification/{id}', name: 'update_lieux')]
     public function update($id,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux administrateurs !");
         }
@@ -98,7 +98,7 @@ class LieuxController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_lieux')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux administrateurs !");
         }
