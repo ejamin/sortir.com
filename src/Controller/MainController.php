@@ -102,7 +102,7 @@ class MainController extends AbstractController
             }
             if($valide && isset($data['passees'])){
                 if($data['passees'] == true){
-                    if($sortie->getDateDebut() < date('d-m-y h:i:s')){
+                    if($sortie->getIdEtat()->id == 5){
                         $valide = true;
                     }else $valide = false;
                 }

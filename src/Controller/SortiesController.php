@@ -191,7 +191,7 @@ class SortiesController extends AbstractController
 
 
     #[Route('/desister/{sortieID}/{participantID}', name: 'sortie_desister')]
-    public function desisters($sortieID,$participantID,EntityManagerInterface $entityManager)
+    public function desister($sortieID,$participantID,EntityManagerInterface $entityManager)
     {
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         if (!$isParticipant) {
@@ -210,6 +210,21 @@ class SortiesController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_sorties');
+    }
+
+    #[Route('publier/{sortieID}',name: 'sortie_publier')]
+    public function publier($sortieID){
+        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        if (!$isParticipant) {
+            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
+        }
+
+        $sortie = $this->sortiesRepository->find($sortieID);
+        $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Ouverte']));
+        $this->sortiesRepository->save($sortie,true);
+        
+        
+        return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
     }
 
 }
