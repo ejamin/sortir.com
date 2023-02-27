@@ -87,9 +87,11 @@
                 <a class="btn btnUpdate" href="{{ path('update_lieux',{id: lieu.id }) }}">
                     <span class="material-icons md-2">edit</span>
                 </a>
+                {% if is_granted('ROLE_ADMIN') %}
                 <a class="btn btnDelete" href="{{ path('delete_lieux',{id: lieu.id, _csrf_token: csrf_token('app_delete_lieux')}) }}">
                     <span class="material-icons md-24">delete</span>
                 </a>
+                {% endif %}
             </div>
             <hr />
         </div>

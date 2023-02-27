@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
@@ -27,11 +26,7 @@ class SitesController extends AbstractController
     #[Route('/', name: 'app_sites')]
     public function index(): Response
     {
-        // $isParticipant = $this->denyAccessUnlessGranted("ROLE_ADMIN");
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         #Création des états à l'arriver de la page
         if(!$this->sitesRepository->findBy(['nom' => 'ENI Rennes'])) {
@@ -83,10 +78,7 @@ class SitesController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_sites')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $site = $this->sitesRepository->find($id);
         if($token = new CsrfToken('app_delete_sites', $request->query->get('_csrf_token'))) {
@@ -108,10 +100,7 @@ class SitesController extends AbstractController
     #[Route('/{id}', name: 'read_sites')]
     public function read($id): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $sorties = $this->sortiesRepository->findAll();
         $site = $this->sitesRepository->find($id);

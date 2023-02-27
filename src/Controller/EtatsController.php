@@ -24,10 +24,7 @@ class EtatsController extends AbstractController
     #[Route('/etats', name: 'app_etats')]
     public function index(): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         #Création des états à l'arriver de la page
         if(!$this->etatsRepository->findBy(['libelle' => 'Créer'])) {
@@ -109,10 +106,7 @@ class EtatsController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_etats')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $etat = $this->etatsRepository->find($id);
         if($token = new CsrfToken('app_delete_etat', $request->query->get('_csrf_token'))) {
