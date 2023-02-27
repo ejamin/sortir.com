@@ -36,18 +36,9 @@ class MainController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $defaultData = $form->getData();
             
-            $this->filtrerSorties($data,$sorties);
-
-            return $this->render('accueil.html.twig', [
-                "now" => date('d-m-y h:i:s'),
-                "form" => $form->createView(),
-                "sorties" => $sorties,
-                "sites" => $sites,
-                "data" => $data,
-                "user" => $this->getUser()
-            ]);
+            $this->filtrerSorties($defaultData,$sorties);
         }
 
         return $this->render('accueil.html.twig', [
