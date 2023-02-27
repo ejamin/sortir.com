@@ -20,9 +20,9 @@ class FiltreFormType extends AbstractType
     {
         $builder->add('sites', EntityType::class, [
             'class' => Sites::class,
-            'choice_label' => function ($site) {
-                return $site->getNom();
-            }])
+            'choice_label' => 'nom',
+            'required' => false
+        ])
         ->add('searchText', TextType::class,['label' => 'Le nom de la sortie contient : ','required'   => false])
         ->add('dateMin',DateTimeType::class, array('widget' => 'single_text','label' => 'Entre ','required'   => false))
         ->add('dateMax',DateTimeType::class, array('widget' => 'single_text','label' => 'et ','required'   => false))
