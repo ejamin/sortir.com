@@ -21,6 +21,7 @@ class FiltreFormType extends AbstractType
         $builder->add('sites', EntityType::class, [
             'class' => Sites::class,
             'choice_label' => 'nom',
+            'placeholder' => 'Tous les campus',
             'required' => false
         ])
         ->add('searchText', TextType::class,['label' => 'Le nom de la sortie contient : ','required'   => false])

@@ -185,7 +185,7 @@ class SortiesController extends AbstractController
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_sorties');
+        return $this->redirectToRoute('app_accueil');
     }
 
 
@@ -208,7 +208,7 @@ class SortiesController extends AbstractController
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_sorties');
+        return $this->redirectToRoute('app_accueil');
     }
 
     #[Route('publier/{sortieID}',name: 'sortie_publier')]
