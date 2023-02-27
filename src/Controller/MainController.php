@@ -26,9 +26,8 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_accueil')]
     public function index(Request $request): Response
     {
-        //$this->changementEtat();
-
-
+        $this->changementEtat();
+        
         $data = ['message' => 'Type your message here'];        
         $form = $this->createForm(FiltreFormType::class, $data);
 
