@@ -136,7 +136,7 @@
             <p><b>Liste des participants inscrit :</b></p>
             {% for participant in participants %}
                 {% if participant in sortie.idParticipant %}
-                    <small><b>Nom :</b> <a class="a_profil" href="{{ path('app_participant_show',{id : sortie.idOrganisateur.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a> </small>
+                    <small><b>Nom :</b> <a class="a_profil" href="{{ path('app_participant_show',{id : participant.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a> </small>
                 {% endif %}
             {% endfor %}
         </div>
@@ -146,5 +146,5 @@
 {% endblock %}
 
 {% block javaScript %}
-    <script src="{{ asset('JavaScript/appSupprToken.js') }}"></script>
+    <script src="{{ asset('js/appSupprToken.js') }}"></script>
 {% endblock %}

@@ -61,10 +61,14 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'idParticipant')]
+    private Collection $idGroupe;
+
     public function __construct()
     {
         $this->idSortie = new ArrayCollection();
         $this->idOrganisateur = new ArrayCollection();
+        $this->idGroupe = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -302,6 +306,33 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Groupe>
+     */
+    public function getIdGroupe(): Collection
+    {
+        return $this->idGroupe;
+    }
+
+    public function addIdGroupe(Groupe $idGroupe): self
+    {
+        if (!$this->idGroupe->contains($idGroupe)) {
+            $this->idGroupe->add($idGroupe);
+            $idGroupe->addIdParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdGroupe(Groupe $idGroupe): self
+    {
+        if ($this->idGroupe->removeElement($idGroupe)) {
+            $idGroupe->removeIdParticipant($this);
+        }
 
         return $this;
     }

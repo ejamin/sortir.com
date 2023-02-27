@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Groupe{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('css/groupe.css')}}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% for label,  messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    {% if label == "success" %}
+                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
+                    {% elseif label == "warning" %}
+                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
+                    {% elseif label == "error" %}
+                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <h3 class="centerPage">{{ groupe.name }}</h3>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-12">
+                <img src="{{ asset('image/photoGroupe/' ~ groupe.photo) }}" class="card-img-top" alt="{{ groupe.name }}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p><b>Liste des participants présentes dans le groupe :</b></p>
+                {% for participant in participants %}
+                    {% if participant in groupe.idParticipant %}
+                        <small><b>Nom :</b> <a class="a_profil" href="{{ path('app_participant_show',{id : participant.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a> </small>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <small id="nbr-{{ groupe.id }}">Nombre d'utilisateurs : {{ groupe.idParticipant|length }}</small>
+                <hr>
+                <div class="centerPage">
+                    {% if  participant not in groupe.idParticipant %}
+                        <button class="btn btnValider">
+                            <a class="a_Inscrit" href="{{ path('groupe_inscription',{groupeID : groupe.id,participantID : participant.id}) }}">
+                                <input type="hidden" id="groupeID" value="{{ groupe.id }}">
+                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je m'inscris
+                            </a>
+                        </button>
+                    {% endif %}
+                    {% if participant in groupe.idParticipant %}
+                        <button class="btn btnValider">
+                            <a class="a_Inscrit" href="{{ path('groupe_desister',{groupeID : groupe.id,participantID : participant.id})}}">
+                                <input type="hidden" id="groupeID" value="{{ groupe.id }}">
+                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je me désiste
+                            </a>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
