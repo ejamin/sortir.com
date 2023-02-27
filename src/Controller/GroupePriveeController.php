@@ -32,6 +32,8 @@ class GroupePriveeController extends AbstractController
     #[Route('/', name: 'app_groupe')]
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
+
         $groupes = $this->groupeRepository->findAll();
         $user = $this->getUser();
         return $this->render('groupe_privee/index.html.twig', ['groupes' => $groupes,'participant' => $user]);
@@ -40,10 +42,7 @@ class GroupePriveeController extends AbstractController
     #[Route('/création', name: 'create_groupe')]
     public function create(Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $groupe = new Groupe();
         $groupeForm = $this->createForm(GroupeFormType::class,$groupe);
@@ -78,12 +77,9 @@ class GroupePriveeController extends AbstractController
     #[Route('/{id}', name: 'read_groupe')]
     public function read($id): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
         $user = $this->getUser();
         $participants = $this->participantsRepository->findAll();
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
         $groupe = $this->groupeRepository->find($id);
         if (!$groupe) {
             throw $this->createNotFoundException("Groupe inexistant");
@@ -95,10 +91,7 @@ class GroupePriveeController extends AbstractController
     #[Route('/modification/{id}', name: 'update_groupe')]
     public function update($id,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $groupe = $this->groupeRepository->find($id);
         if (!$groupe) {
@@ -136,10 +129,7 @@ class GroupePriveeController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_groupe')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_ADMIN");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $groupe = $this->groupeRepository->find($id);
         if($token = new CsrfToken('app_delete_groupe', $request->query->get('_csrf_token'))) {
@@ -163,10 +153,7 @@ class GroupePriveeController extends AbstractController
     #[Route('/inscription/{groupeID}/{participantID}', name: 'groupe_inscription')]
     public function inscriptions($groupeID,$participantID,EntityManagerInterface $entityManager)
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
 
         $groupe = $this->groupeRepository->find($groupeID);
         $participant = $this->participantsRepository->find($participantID);
@@ -186,10 +173,7 @@ class GroupePriveeController extends AbstractController
     #[Route('/desister/{groupeID}/{participantID}', name: 'groupe_desister')]
     public function desister($groupeID,$participantID,EntityManagerInterface $entityManager)
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux personnes inscrites sur ce site!");
-        }
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
 
         $groupe = $this->groupeRepository->find($groupeID);
         $participant = $this->participantsRepository->find($participantID);

@@ -33,7 +33,6 @@ class SortiesController extends AbstractController
     #[Route('/', name: 'app_sorties')]
     public function index(): Response
     {
-        #Formulaire de recherche
         $sorties = $this->sortiesRepository->findAll();
         $user = $this->getUser();
 

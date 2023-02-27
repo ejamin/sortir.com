@@ -32,10 +32,7 @@ class LieuxController extends AbstractController
     #[Route('/', name: 'app_lieux')]
     public function index(Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
 
         $lieu = new Lieux();
         $lieuForm = $this->createForm(LieuxFormType::class,$lieu);
@@ -67,10 +64,7 @@ class LieuxController extends AbstractController
     #[Route('/modification/{id}', name: 'update_lieux')]
     public function update($id,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
 
         $lieu = $this->lieuxRepository->find($id);
         $lieuForm = $this->createForm(LieuxFormType::class,$lieu);
@@ -98,10 +92,7 @@ class LieuxController extends AbstractController
     #[Route('/suppression/{id}', name: 'delete_lieux')]
     public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
     {
-        $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
-        if (!$isParticipant) {
-            throw new AccessDeniedException("Réservé aux administrateurs !");
-        }
+        $this->denyAccessUnlessGranted("ROLE_ADMIN");
 
         $lieu = $this->lieuxRepository->find($id);
         if($token = new CsrfToken('app_delete_lieux', $request->query->get('_csrf_token'))) {

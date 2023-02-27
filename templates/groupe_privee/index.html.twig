@@ -52,6 +52,7 @@
                         </button>
                     {% endif %}
                 </div>
+                {% if is_granted('ROLE_ADMIN') %}
                 <div class="col-3">
                     <a class="btn btnUpdate" href="{{ path('update_groupe',{id: groupe.id }) }}">
                         <span class="material-icons md-2">edit</span>
@@ -60,6 +61,7 @@
                         <span class="material-icons md-24">delete</span>
                     </a>
                 </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

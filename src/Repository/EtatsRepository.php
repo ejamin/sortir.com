@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Etats;
+use App\Entity\Sorties;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,12 @@ class EtatsRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+    public function updateEtat(Sorties $sorties)
+    {
+        $query = $this->createQueryBuilder('e')->select('s');
     }
 
 }
