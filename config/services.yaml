@@ -6,6 +6,7 @@
 parameters:
     upload_image_sortie: '%kernel.project_dir%/public/image/photoVisite'
     upload_image_participant: '%kernel.project_dir%/public/image/photoParticipant'
+    upload_image_groupe: '%kernel.project_dir%/public/image/photoGroupe'
 services:
     # default configuration for services in *this* file
     _defaults:
