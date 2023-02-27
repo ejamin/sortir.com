@@ -27,6 +27,7 @@ class SitesController extends AbstractController
     #[Route('/', name: 'app_sites')]
     public function index(): Response
     {
+        // $isParticipant = $this->denyAccessUnlessGranted("ROLE_ADMIN");
         $isParticipant = $this->isGranted("ROLE_ADMIN");
         if (!$isParticipant) {
             throw new AccessDeniedException("Réservé aux administrateurs !");

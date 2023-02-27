@@ -29,7 +29,7 @@ class SortieAnnulerFormType extends AbstractType
 
             ->add('motif', null, ['label' => 'Motif d\'annulation : '])
 
-            ->add('valider', SubmitType::class, ['label'=> "Valider"])
+            ->add('valider', SubmitType::class, ['label'=> "Valider", 'required' => true])
         ;
     }
 
