@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Création Groupe{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('css/groupe.css')}}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% for label,  messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    {% if label == "success" %}
+                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
+                    {% elseif label == "warning" %}
+                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
+                    {% elseif label == "error" %}
+                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <h3 class="centerPage">Création d'un groupe privée</h3>
+    <div class="container">
+        {{ form_start(groupeForm) }}
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(groupeForm.name) }}
+                {{ form_widget(groupeForm.name) }}
+                {{ form_errors(groupeForm.name) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_label(groupeForm.photo) }}
+                {{ form_widget(groupeForm.photo) }}
+                {{ form_errors(groupeForm.photo) }}
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(groupeForm.valider,{'attr':{'class': 'btnValider'} }) }}
+            </div>
+        </div>
+        {{ form_end(groupeForm) }}
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btnValider">
+                    <a class="a_Inscrit" href="{{ path('app_groupe') }}">Annuler</a>
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
