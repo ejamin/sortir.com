@@ -75,27 +75,27 @@ class SitesController extends AbstractController
         return $this->render('sites/index.html.twig', ['sites' => $sites]);
     }
 
-    #[Route('/suppression/{id}', name: 'delete_sites')]
-    public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
-    {
-        $this->denyAccessUnlessGranted("ROLE_ADMIN");
-
-        $site = $this->sitesRepository->find($id);
-        if($token = new CsrfToken('app_delete_sites', $request->query->get('_csrf_token'))) {
-            if(!$csrfTokenManager->isTokenValid($token)) {
-                $this->addFlash('warning', '');
-                throw $this->createAccessDeniedException('Jeton CSRF invalide');
-            } else {
-                try {
-                    $this->sitesRepository->remove($site, true);
-                } catch (\Exception $exception) {
-                    $this->addFlash('error', '');
-                }
-            }
-        }
-
-        return $this->redirectToRoute('app_sites');
-    }
+//    #[Route('/suppression/{id}', name: 'delete_sites')]
+//    public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
+//    {
+//        $this->denyAccessUnlessGranted("ROLE_ADMIN");
+//
+//        $site = $this->sitesRepository->find($id);
+//        if($token = new CsrfToken('app_delete_sites', $request->query->get('_csrf_token'))) {
+//            if(!$csrfTokenManager->isTokenValid($token)) {
+//                $this->addFlash('warning', '');
+//                throw $this->createAccessDeniedException('Jeton CSRF invalide');
+//            } else {
+//                try {
+//                    $this->sitesRepository->remove($site, true);
+//                } catch (\Exception $exception) {
+//                    $this->addFlash('error', '');
+//                }
+//            }
+//        }
+//
+//        return $this->redirectToRoute('app_sites');
+//    }
 
     #[Route('/{id}', name: 'read_sites')]
     public function read($id): Response

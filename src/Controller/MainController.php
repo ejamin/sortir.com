@@ -125,29 +125,26 @@ class MainController extends AbstractController
         foreach ($sorties as $sortie) {
             $minutesToAdd = $sortie->getDuree();
             if(!$etatCreer or !$etatAnnuler) {
-                if ($now >= $sortie->getDateDebut() && $now <= ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes"))) {
+                if($now >= $sortie->getDateDebut() && $now <= ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes"))) {
                     $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Activitée en cours']));
                     $this->sortiesRepository->save($sortie, true);
-                    return;
                     break;
                 }
-                if ($now > ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes")) && $now <= ($sortie->getDateDebut()->modify("+43800 minutes"))) {
+                if($now > ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes")) && $now <= ($sortie->getDateDebut()->modify("+43800 minutes"))) {
                     $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Passée']));
                     $this->sortiesRepository->save($sortie, true);
-                    return;
                     break;
                 }
-                if ($now > $sortie->getDateFin()) {
+                if($now > $sortie->getDateFin()) {
                     $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Clôturée']));
                     $this->sortiesRepository->save($sortie, true);
-                    return;
                     break;
                 }
             }
             if($now > ($sortie->getDateDebut()->modify("+43800 minutes"))) {
                 $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Archivée']));
                 $this->sortiesRepository->save($sortie, true);
-                return; break;
+                break;
             }
         }
     }
