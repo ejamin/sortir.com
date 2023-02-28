@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use App\Service\FileUploader;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/sorties')]
 class SortiesController extends AbstractController
@@ -224,8 +226,8 @@ class SortiesController extends AbstractController
         
         
         return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
-    }
-
+    }  
+     
 }
 
 

@@ -7,6 +7,7 @@ parameters:
     upload_image_sortie: '%kernel.project_dir%/public/image/photoVisite'
     upload_image_participant: '%kernel.project_dir%/public/image/photoParticipant'
     upload_image_groupe: '%kernel.project_dir%/public/image/photoGroupe'
+    upload_directory: '%kernel.project_dir%/public/uploads/participants'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -21,6 +22,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%upload_directory%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

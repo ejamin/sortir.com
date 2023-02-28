@@ -4,14 +4,26 @@
 
 {% block body %}
     <h1>Register</h1>
+    {% if not app.user %}
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Password'
+            }) }}
+            {{ form_row(registrationForm.agreeTerms) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <button type="submit" class="btn">Register</button>
+        {{ form_end(registrationForm) }}
+    {% elseif is_granted('ROLE_ADMIN') %}
+            {{ form_start(createForm) }}
+            <div id="divImage" class="d-fill d-flex flex-row">
+                <div class="align-self-center p-2"> 
+                {{ form_label(createForm.participants) }}
+                </div>
+                <div class="flex-grow-1 align-self-center p-2"> 
+                {{ form_widget(createForm.participants) }}   
+                </div>
+            </div>
+            {{ form_end(createForm) }}
+    {% endif %}
 {% endblock %}

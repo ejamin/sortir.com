@@ -3,9 +3,7 @@
 {% endblock %}
 
 {% block body %}    
-    <button class="btnValider">
-        <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
-    </button>
+    
     <div class="row">
         {% for sortie in sorties %}
             {% if sortie.idEtat != "Archivée" %}
@@ -96,6 +94,9 @@
             {% endif %}
         {% endfor %}
     </div>
+    <button class="btnValider">
+        <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
+    </button>
 
 
 {% endblock %}

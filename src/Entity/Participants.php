@@ -336,4 +336,12 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function hasRoles($role): bool {
+        $hasRole = false;
+        if(in_array($role,$this->roles)){
+            $hasRole = true;
+        }
+        return $hasRole;
+    }
 }

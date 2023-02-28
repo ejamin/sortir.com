@@ -53,13 +53,12 @@ class SortiesRepository extends ServiceEntityRepository
         }
 
         if ($search) {
-            $qb->andWhere('s.nom LIKE :search ')
+            $qb->andWhere($qb->expr()->like('s.nom',':search'))
                 ->setParameter('search',"%{$search}%");
         }
         if($dateMin && $dateMax){
-            $qb->andWhere('s.dateDebut >= :dateMin ')
-                ->setParameter('dateMin',$dateMin);
-            $qb->andWhere('s.dateFin <=  :dateMax ')
+            $qb->andWhere($qb->expr()->between('s.dateDebut',':dateMin',':dateMax'))
+                ->setParameter('dateMin',$dateMin)
                 ->setParameter('dateMax',$dateMax);
         }
         if($organisateur){
