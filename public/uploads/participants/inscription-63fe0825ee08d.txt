@@ -1,0 +1,3 @@
+esteban@esteban.com;esteban;Jamin;esteban;51025461;"""ROLE_PARTICIPANT""";password;ENI Rennes
+bonjour@bonjour.fr;bonjour;Bonjour;Bonjour;123456789;"""ROLE_PARTICIPANT""";password;ENI Rennes
+monarque@royaute.fr;Monarque;XVII;Louis;12346789;ROLE_ADMIN;admin;ENI Quimper
