@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\EtatsRepository;
 use App\Repository\SitesRepository;
 use App\Repository\SortiesRepository;
+use App\Services\UpdtatedServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,19 +15,17 @@ use App\Form\FiltreFormType;
 class MainController extends AbstractController
 {   
     private SortiesRepository $sortiesRepository;
-    private SitesRepository $sitesRepository;
-    private EtatsRepository $etatsRepository;
+    private UpdtatedServices $services;
 
-    public function __construct(SortiesRepository $sortiesRepository, SitesRepository $sitesRepository,EtatsRepository $etatsRepository){
+    public function __construct(SortiesRepository $sortiesRepository,UpdtatedServices $services){
         $this->sortiesRepository = $sortiesRepository;
-        $this->sitesRepository = $sitesRepository;
-        $this->etatsRepository = $etatsRepository;
+        $this->services = $services;
     }
 
     #[Route('/', name: 'app_accueil')]
     public function index(Request $request): Response
     {
-        $this->changementEtat();
+        $this->services->setEtat();
         
         $data = ['message' => 'Type your message here'];        
         $form = $this->createForm(FiltreFormType::class, $data);
@@ -47,40 +46,6 @@ class MainController extends AbstractController
             "data" => $data,
             "user" => $this->getUser()
         ]);
-    }
-    
-    public function changementEtat() #Créér - Ouverte - Clôturée - Activitée en cours - Passée - Annulée - Archivée
-    {
-        $sorties = $this->sortiesRepository->findAll();
-        $now = new \DateTime('now');
-        $etatCreer = $this->etatsRepository->findOneBy(['libelle' => 'Créér']);
-        $etatAnnuler = $this->etatsRepository->findOneBy(['libelle' => 'Annulée']);
-
-        foreach ($sorties as $sortie) {
-            $minutesToAdd = $sortie->getDuree();
-            if(!$etatCreer or !$etatAnnuler) {
-                if($now >= $sortie->getDateDebut() && $now <= ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes"))) {
-                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Activitée en cours']));
-                    $this->sortiesRepository->save($sortie, true);
-                    break;
-                }
-                if($now > ($sortie->getDateDebut()->modify("+{$minutesToAdd} minutes")) && $now <= ($sortie->getDateDebut()->modify("+43800 minutes"))) {
-                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Passée']));
-                    $this->sortiesRepository->save($sortie, true);
-                    break;
-                }
-                if($now > $sortie->getDateFin()) {
-                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Clôturée']));
-                    $this->sortiesRepository->save($sortie, true);
-                    break;
-                }
-            }
-            if($now > ($sortie->getDateDebut()->modify("+43800 minutes"))) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Archivée']));
-                $this->sortiesRepository->save($sortie, true);
-                break;
-            }
-        }
     }
 
 }
