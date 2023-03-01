@@ -8,6 +8,7 @@ use App\Form\SortieFormType;
 use App\Repository\EtatsRepository;
 use App\Repository\ParticipantsRepository;
 use App\Repository\SortiesRepository;
+use App\Services\UpdtatedServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,12 +23,14 @@ class SortiesController extends AbstractController
     private SortiesRepository $sortiesRepository;
     private EtatsRepository $etatsRepository;
     private ParticipantsRepository $participantsRepository;
+    private UpdtatedServices $services;
 
-    public function __construct(SortiesRepository $sortiesRepository, EtatsRepository $etatsRepository, ParticipantsRepository $participantsRepository)
+    public function __construct(SortiesRepository $sortiesRepository, EtatsRepository $etatsRepository, ParticipantsRepository $participantsRepository,UpdtatedServices $services)
     {
         $this->sortiesRepository = $sortiesRepository;
         $this->etatsRepository = $etatsRepository;
         $this->participantsRepository = $participantsRepository;
+        $this->services = $services;
     }
 
     #[Route('/', name: 'app_sorties')]
@@ -86,6 +89,9 @@ class SortiesController extends AbstractController
     #[Route('/{id}', name: 'read_sorties')]
     public function read($id): Response
     {
+
+        $this->services->setEtat();
+
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         $user = $this->getUser();
         $participants = $this->participantsRepository->findAll();
