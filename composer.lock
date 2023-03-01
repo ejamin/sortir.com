@@ -767,7 +767,7 @@
                 },
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "": "ocramius@gmail.com"
                 }
             ],
             "description": "The Doctrine Event Manager is a simple PHP event system that was built to be used with the various Doctrine projects.",
