@@ -59,6 +59,7 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
         $this->save($user, true);
     }
 
+
     
     public function loadUserByIdentifier(string $usernameOrEmail): ?Participants
     {
@@ -77,6 +78,29 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
     public function loadUserByUsername(string $usernameOrEmail): ?Participants
     {
         return $this->loadUserByIdentifier($usernameOrEmail);
+    }
+
+
+    public function exists($nom, $prenom, $email){
+        $con = $this->getEntityManager()->getConnection();
+        
+        $qb = $this->createQueryBuilder('p');
+        $qb->where($qb->expr()->orX(
+            $qb->expr()->andX($qb->expr()->eq('p.nom', ':nom'), $qb->expr()->eq('p.prenom', ':prenom')),
+            $qb->expr()->eq('p.email', ':email')
+        ))
+            ->setParameter('nom',$nom)
+            ->setParameter('prenom',$prenom)
+            ->setParameter('email',$email);
+            
+
+        $query = $qb->getQuery();
+
+        if($query->getResult()){
+            return true;
+        }
+        
+        return false;
     }
 
 }

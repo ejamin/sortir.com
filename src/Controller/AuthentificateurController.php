@@ -11,22 +11,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Service\FileUploader;
+use App\Form\UploadFileFormType;
+use App\Repository\SitesRepository;
 
 class AuthentificateurController extends AbstractController
 {
     private ParticipantsRepository $participantsRepository;
+    private SitesRepository $sitesRepository;
 
-    public function __construct(ParticipantsRepository $participantsRepository)
+    public function __construct(ParticipantsRepository $participantsRepository, SitesRepository $sitesRepository)
     {
         $this->participantsRepository = $participantsRepository;
+        $this->sitesRepository = $sitesRepository;
     }
 
     #[Route(path: '/connexion', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_accueil');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -120,5 +125,59 @@ class AuthentificateurController extends AbstractController
         return $this->render('participants/update.html.twig', [
             'participantForm' => $participantForm->createView(),
         ]);
+    }
+
+    #[Route('/creation-multiple', name: 'app_creation_multiple')]
+    //#[IsGranted(["ROLE_ADMIN"])]
+    public function inscriptionMultiple(Request $request, UserPasswordHasherInterface $userPasswordHasher, FileUploader $fileUploader): Response{
+       
+        $formFile = $this->createForm(UploadFileFormType::class);
+        $formFile->handleRequest($request);
+        $sites = $this->sitesRepository->findAll();
+
+        if ($formFile->isSubmitted()) {           
+            $participantFile = $formFile->get('participants')->getData();
+            if ($participantFile) {
+                $participantFileName = $fileUploader->upload($participantFile);
+                $arrayDatas = [];
+                $row = 0;
+                if (($handle = fopen($this->getParameter("upload_directory")."/".$participantFileName, "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                        $num = count($data);
+                        array_push($arrayDatas, $data[0]);
+                        $row++;
+                        if($row==1) continue; 
+                        $participantData = explode(";",$data[0]);
+                        if(!$this->participantsRepository->exists($participantData[2],$participantData[3],$participantData[0])){
+                            $participant = new Participants();
+                            $participant->setEmail($participantData[0]);
+                            $participant->setPseudo($participantData[1]);
+                            $participant->setNom($participantData[2]);
+                            $participant->setPrenom($participantData[3]);  
+                            $participant->setTelephone($participantData[4]);                      
+                            $participant->setRoles([$participantData[5]]);
+                            $participant->setIsActif(true);
+                            $participant->setIsAdmin($participant->hasRoles("ROLE_ADMIN"));
+                            $participant->setPassword(
+                                $userPasswordHasher->hashPassword(
+                                        $participant,
+                                        $participantData[6]
+                                    )
+                                );
+                            $campus = array_filter($sites, fn($s) => strcasecmp($participantData[7], $s->getNom()) == 0 );
+                            if(sizeof($campus)> 0){
+                                $participant->setIdSites($campus[array_key_first($campus)]);
+                            }
+                            $this->participantsRepository->save($participant, true);   
+                        }                     
+                                                
+                    }
+                    fclose($handle);               
+                    return $this->render("registration/register.html.twig", ["createForm" => $formFile->createView() ]);
+                    //return $this->redirectToRoute('app_accueil');
+                }
+            }            
+        }
+        return $this->render("registration/register.html.twig", ["createForm" => $formFile->createView() ]);
     }
 }

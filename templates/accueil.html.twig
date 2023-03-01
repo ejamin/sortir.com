@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<div class="w-75 p-3 mx-auto">
+<div class="container">
     <div id="Titre" class="d-flex flex-column align-items-center">
         <h2> Accueil </h2>
     </div>
@@ -79,56 +79,12 @@
                 </div>
             </div>            
         {{ form_end(form) }}
-    </div>
-    <div id="listeSorties">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Nom de la sortie</th>
-                    <th>Date de la sortie</th>
-                    <th>Clôture</th>
-                    <th>Inscrits/places</th>
-                    <th>Etat</th>
-                    <th>Inscrit</th>
-                    <th>Organisateur</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            
-            <tbody>
-            {% for sortie in sorties %}  
-                {% if app.user in sortie.idParticipant %} 
-                    {% set estInscrit = true %}
-                {% else %}         
-                    {% set estInscrit = false %}
-                {% endif %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateDebut | date("d/m/Y H:i:s") }}</td>
-                    <td>{{ sortie.dateFin | date("d/m/Y H:i:s") }}</td>
-                    <td>{{ sortie.idParticipant| length }} / {{ sortie.nbInscritMax }}</td>
-                    <td>{{ sortie.idEtat.libelle }}</td>
-                    <td>{{ (estInscrit) ? 'X' : ' ' }}</td>
-                    <td>{{ sortie.idOrganisateur.pseudo }}</td>
-                    
-                    <td><a href="{{ path('read_sorties', { 'id': sortie.id })}}">Afficher</a> - 
-                    {% if (app.user == sortie.idOrganisateur) and (sortie.dateDebut < date()) %}
-                        <a href="{{ path('delete_sorties', { 'id': sortie.id })}}">Annuler</a>
-                    {% elseif (app.user == sortie.idOrganisateur) and (sortie.idEtat.id == 1) %}
-                        <a href="{{ path('update_sorties', { 'id': sortie.id })}}">Modifier</a> - 
-                        <a href="{{ path('sortie_publier', { 'sortieID': sortie.id })}}">Publier</a>
-                    {% elseif (app.user) and (estInscrit == false) and (sortie.idEtat.id == 2) %}
-                        <a href="{{ path('sortie_inscription', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">S'inscrire</a>
-                    {% elseif (app.user) and estInscrit == true and (sortie.idEtat.id == 2) %}
-                        <a href="{{ path('sortie_desister', { 'sortieID': sortie.id, 'participantID' : app.user.id })}}">Se désister</a>
-                    {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table> 
-    </div>
-    <a href="{{ path('create_sorties') }}" class="btn btn-outline-success">Créer une sortie</a>
+    </div>   
+
+    <div class="listeSorties">
+        {{ include('sorties/index.html.twig') }}
+    </div> 
+    
 </div>
 
 

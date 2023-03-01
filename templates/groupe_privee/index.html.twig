@@ -7,22 +7,8 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        {% for label,  messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">
-                    {% if label == "success" %}
-                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
-                    {% elseif label == "warning" %}
-                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
-                    {% elseif label == "error" %}
-                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
+
+    {% include('components/flash.html.twig') %}
 
     <div class="container">
         <button class="btnValider">
@@ -52,6 +38,7 @@
                         </button>
                     {% endif %}
                 </div>
+                {% if is_granted('ROLE_ADMIN') %}
                 <div class="col-3">
                     <a class="btn btnUpdate" href="{{ path('update_groupe',{id: groupe.id }) }}">
                         <span class="material-icons md-2">edit</span>
@@ -60,6 +47,7 @@
                         <span class="material-icons md-24">delete</span>
                     </a>
                 </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

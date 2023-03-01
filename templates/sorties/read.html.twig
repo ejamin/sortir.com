@@ -7,22 +7,8 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        {% for label,  messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">
-                    {% if label == "success" %}
-                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
-                    {% elseif label == "warning" %}
-                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
-                    {% elseif label == "error" %}
-                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
+
+    {% include('components/flash.html.twig') %}
 
     <div class="container">
         <div class="row">
@@ -46,10 +32,10 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <p><b>Date de l'activité :</b>  {{ sortie.dateDebut|date('d/m/Y') }}</p>
+                <p><b>Date de l'activité :</b>  {{ sortie.dateDebut|date('d-m-Y H:i') }}</p>
             </div>
             <div class="col-6">
-                <p><b>Date de fin d'inscription :</b>  {{ sortie.dateFin|date('d/m/Y') }}</p>
+                <p><b>Date de fin d'inscription :</b>  {{ sortie.dateFin|date('d-m-Y H:i') }}</p>
             </div>
         </div>
         <div class="row">
@@ -106,24 +92,28 @@
     <div class="container">
         <div class="row">
             {% if sortie.idEtat.libelle != "Créér" %}
-                <p><b>Inscrits/places dispos :</b> {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</p>
-                <div class="centerPage">
-                    {% if  "now"|date('d-m-Y') >= sortie.dateDebut|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant not in sortie.idParticipant %}
-                        <button class="btn btnValider">
-                            <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : participant.id}) }}">
-                                <input type="hidden" id="sortieID" value="{{ sortie.id }}">
-                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je m'inscris
-                            </a>
-                        </button>
-                    {% endif %}
-                    {% if sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
-                        <button class="btn btnValider">
-                            <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : participant.id}) }}">
-                                <input type="hidden" id="sortieID" value="{{ sortie.id }}">
-                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je me désiste
-                            </a>
-                        </button>
-                    {% endif %}
+                <div class="row">
+                    <div class="inscrit-info">
+                        <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
+                    </div>
+                    <div class="centerPage">
+                        {% if  sortie.idEtat.libelle == "Ouverte" and app.user not in sortie.idParticipant %}
+                            <button class="btn btnValider">
+                                <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : app.user.id}) }}">
+                                    <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                    <input type="hidden" id="participantID" value="{{ app.user.id }}">Je m'inscris
+                                </a>
+                            </button>
+                        {% endif %}
+                        {% if sortie.idEtat.libelle != "Activitée en cours" and sortie.idEtat.libelle != "Passée"  and sortie.idEtat.libelle != "Annulée" and app.user in sortie.idParticipant %}
+                            <button class="btn btnValider">
+                                <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : app.user.id}) }}">
+                                    <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                    <input type="hidden" id="participantID" value="{{ app.user.id }}">Je me désiste
+                                </a>
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             {% elseif sortie.idEtat.libelle == "Créér" %}
                 <small class="text-danger">Pas d'inscription pour le moment</small>

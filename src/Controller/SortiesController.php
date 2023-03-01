@@ -8,6 +8,7 @@ use App\Form\SortieFormType;
 use App\Repository\EtatsRepository;
 use App\Repository\ParticipantsRepository;
 use App\Repository\SortiesRepository;
+use App\Services\UpdtatedServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use App\Service\FileUploader;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/sorties')]
 class SortiesController extends AbstractController
@@ -22,18 +25,19 @@ class SortiesController extends AbstractController
     private SortiesRepository $sortiesRepository;
     private EtatsRepository $etatsRepository;
     private ParticipantsRepository $participantsRepository;
+    private UpdtatedServices $services;
 
-    public function __construct(SortiesRepository $sortiesRepository, EtatsRepository $etatsRepository, ParticipantsRepository $participantsRepository)
+    public function __construct(SortiesRepository $sortiesRepository, EtatsRepository $etatsRepository, ParticipantsRepository $participantsRepository,UpdtatedServices $services)
     {
         $this->sortiesRepository = $sortiesRepository;
         $this->etatsRepository = $etatsRepository;
         $this->participantsRepository = $participantsRepository;
+        $this->services = $services;
     }
 
     #[Route('/', name: 'app_sorties')]
     public function index(): Response
     {
-        #Formulaire de recherche
         $sorties = $this->sortiesRepository->findAll();
         $user = $this->getUser();
 
@@ -87,6 +91,9 @@ class SortiesController extends AbstractController
     #[Route('/{id}', name: 'read_sorties')]
     public function read($id): Response
     {
+
+        $this->services->setEtat();
+
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
         $user = $this->getUser();
         $participants = $this->participantsRepository->findAll();
@@ -186,7 +193,7 @@ class SortiesController extends AbstractController
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_sorties');
+        return $this->redirectToRoute('app_accueil');
     }
 
 
@@ -209,7 +216,7 @@ class SortiesController extends AbstractController
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_sorties');
+        return $this->redirectToRoute('app_accueil');
     }
 
     #[Route('publier/{sortieID}',name: 'sortie_publier')]
@@ -225,8 +232,8 @@ class SortiesController extends AbstractController
         
         
         return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
-    }
-
+    }  
+     
 }
 
 

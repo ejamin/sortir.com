@@ -7,22 +7,8 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        {% for label,  messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">
-                    {% if label == "success" %}
-                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
-                    {% elseif label == "warning" %}
-                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
-                    {% elseif label == "error" %}
-                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
+
+    {% include('components/flash.html.twig') %}
 
     <h3 class="centerPage">{{ groupe.name }}</h3>
     <div class="container">
@@ -33,14 +19,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
-                <p><b>Liste des participants présentes dans le groupe :</b></p>
-                {% for participant in participants %}
-                    {% if participant in groupe.idParticipant %}
-                        <small><b>Nom :</b> <a class="a_profil" href="{{ path('app_participant_show',{id : participant.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a> </small>
-                    {% endif %}
-                {% endfor %}
-            </div>
+            <p><b>Liste des participants présentes dans le groupe :</b></p>
+            {% for participant in participants %}
+                {% if participant in groupe.idParticipant %}
+                    <small><b>Nom :</b><a class="a_profil" href="{{ path('app_participant_show',{id : participant.id}) }}">{{ participant.nom }} {{ participant.prenom }}</a></small>
+                {% endif %}
+            {% endfor %}
         </div>
         <div class="row">
             <div class="col-12">

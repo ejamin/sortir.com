@@ -1,126 +1,102 @@
-{% extends 'base.html.twig' %}
-
-{% block title %} {{ parent() }} | Sorties{% endblock %}
-
 {% block stylesheets %}
     <link rel="stylesheet" href="{{asset('css/sortie.css')}}">
 {% endblock %}
 
-{% block body %}
-    <h1 class="centerPage">Bienvenue {{ participant.nom }} {{ participant.prenom }}</h1>
+{% block body %}    
+    
+    <div class="row">
+        {% for sortie in sorties %}
+            {% if sortie.idEtat != "Archivée" %}
+                <div class="card">
+                    <div class="card-header">
+                        <a class="text-decoration-none" href="{{ path('read_sorties',{id : sortie.id}) }}">
+                            <img src="{{ asset('image/photoVisite/' ~ sortie.photo) }}" class="card-img-top" alt="{{ sortie.nom }}" />
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if sortie.idSite.nom == 'ENI Rennes' %}
+                            <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-rennes">{{ sortie.idSite.nom }}</span></a>
+                        {% elseif sortie.idSite.nom == 'ENI Nantes' %}
+                            <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-nantes">{{ sortie.idSite.nom }}</span></a>
+                        {% elseif sortie.idSite.nom == 'ENI Quimper' %}
+                            <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-quimper">{{ sortie.idSite.nom }}</span></a>
+                        {% elseif sortie.idSite.nom == 'ENI Niort' %}
+                            <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-niort">{{ sortie.idSite.nom }}</span></a>
+                        {% endif %}
 
-    <div class="container">
-        {% for label,  messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">
-                    {% if label == "success" %}
-                        <strong class="font__weight-semibold">Félicitation !</strong> Votre demande à bien aboutie.
-                    {% elseif label == "warning" %}
-                        <strong class="font__weight-semibold">Attention !</strong> Une erreur est survenue.
-                    {% elseif label == "error" %}
-                        <strong class="font__weight-semibold">Erreur !</strong> Votre demande n'a pas pu aboutir.
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
+                        <h4>{{ sortie.nom }}</h4>
+                        <small>{{ sortie.description }}</small>
 
-    <div class="container">
-        <button class="btnValider">
-            <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
-        </button>
-        <div class="row">
-            {% for sortie in sorties %}
-                {% if sortie.idEtat != "Archivée" %}
-                    <div class="card">
-                        <div class="card-header">
-                            <a class="text-decoration-none" href="{{ path('read_sorties',{id : sortie.id}) }}">
-                                <img src="{{ asset('image/photoVisite/' ~ sortie.photo) }}" class="card-img-top" alt="{{ sortie.nom }}" />
-                            </a>
-                        </div>
-                        <div class="card-body">
-                            {% if sortie.idSite.nom == 'ENI Rennes' %}
-                                <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-rennes">{{ sortie.idSite.nom }}</span></a>
-                            {% elseif sortie.idSite.nom == 'ENI Nantes' %}
-                                <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-nantes">{{ sortie.idSite.nom }}</span></a>
-                            {% elseif sortie.idSite.nom == 'ENI Quimper' %}
-                                <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-quimper">{{ sortie.idSite.nom }}</span></a>
-                            {% elseif sortie.idSite.nom == 'ENI Niort' %}
-                                <a class="text-decoration-none" href="{{ path('read_sites',{id : sortie.idSite.id}) }}"><span class="tag tag-niort">{{ sortie.idSite.nom }}</span></a>
-                            {% endif %}
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                            <h4>{{ sortie.nom }}</h4>
-                            <small>{{ sortie.description }}</small>
+                        <small>Date de l'activité : {{ sortie.dateDebut|date('d-m-Y H:i') }}</small>
+                        <small>Clotûre d'inscription : {{ sortie.dateFin|date('d-m-Y H:i') }}</small>
 
-                            <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                            <small>Date de l'activité : {{ sortie.dateDebut|date('d-m-Y H:m') }}</small>
-                            <small>Clotûre d'inscription : {{ sortie.dateFin|date('d-m-Y H:m') }}</small>
+                        <small>A {{ sortie.idLieu.nom }}</small>
+                        <small>Au {{ sortie.idLieu.rue }}, {{ sortie.idLieu.idVille.codePostal}} {{ sortie.idLieu.idVille.nom}}</small>
 
-                            <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                            <small>A {{ sortie.idLieu.nom }}</small>
-                            <small>Au {{ sortie.idLieu.rue }}, {{ sortie.idLieu.idVille.codePostal}} {{ sortie.idLieu.idVille.nom}}</small>
-
-                            <hr style="width: 100%; color: black; height: 1px; background-color:black;">
-
-                            <div class="inscrit">
-                                <div class="container">
-                                    {% if sortie.idEtat.libelle != "Créér" %}
-                                        <div class="row">
-                                            <div id="estInscrit-{{ sortie.id }}">
-                                                {% if participant in sortie.idParticipant %}
-                                                    <small class="text-success">J'y serai !</small>
-                                                {% else %}
-                                                    <small class="text-dark">Je n'y serai pas !</small>
-                                                {% endif %}
-                                            </div>
+                        <div class="inscrit">
+                            <div class="container">
+                                {% if sortie.idEtat.libelle != "Créér" %}
+                                    <div class="row">
+                                        <div id="estInscrit-{{ sortie.id }}">
+                                            {% if app.user in sortie.idParticipant %}
+                                                <small class="text-success">J'y serai !</small>
+                                            {% else %}
+                                                <small class="text-dark">Je n'y serai pas !</small>
+                                            {% endif %}
                                         </div>
-                                        <div class="row">
-                                            <div class="inscrit-info">
-                                                <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
-                                                <div class="centerPage">
-                                                    {% if  "now"|date('d-m-Y') >= sortie.dateDebut|date('d-m-Y') and sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant not in sortie.idParticipant %}
-                                                        <button class="btn btnValider">
-                                                         <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : participant.id}) }}">
-                                                                <input type="hidden" id="sortieID" value="{{ sortie.id }}">
-                                                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je m'inscris
-                                                            </a>
-                                                        </button>
-                                                    {% endif %}
-                                                    {% if sortie.idEtat.libelle == "Ouverte" and sortie.idParticipant|length <= sortie.nbInscritMax and participant in sortie.idParticipant %}
-                                                        <button class="btn btnValider">
-                                                            <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : participant.id}) }}">
-                                                                <input type="hidden" id="sortieID" value="{{ sortie.id }}">
-                                                                <input type="hidden" id="participantID" value="{{ participant.id }}">Je me désiste
-                                                            </a>
-                                                        </button>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="inscrit-info">
+                                            <small id="inscription-{{ sortie.id }}">Inscrits/places dispos : {{ sortie.idParticipant|length }} / {{ sortie.nbInscritMax }}</small>
                                         </div>
-                                    {% elseif sortie.idEtat.libelle == "Créér" %}
-                                        <small class="text-danger">Pas d'inscription pour le moment</small>
-                                    {% endif %}
-                                </div>
+                                        <div class="centerPage">
+                                            {% if  sortie.idEtat.libelle == "Ouverte" and app.user not in sortie.idParticipant %}
+                                                <button class="btn btnValider">
+                                                    <a class="a_Inscrit" href="{{ path('sortie_inscription',{sortieID : sortie.id,participantID : app.user.id}) }}">
+                                                        <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                                        <input type="hidden" id="participantID" value="{{ app.user.id }}">Je m'inscris
+                                                    </a>
+                                                </button>
+                                            {% endif %}
+                                            {% if sortie.idEtat.libelle != "Activitée en cours" and sortie.idEtat.libelle != "Passée"  and sortie.idEtat.libelle != "Annulée" and app.user in sortie.idParticipant %}
+                                                <button class="btn btnValider">
+                                                    <a class="a_Inscrit" href="{{ path('sortie_desister',{sortieID : sortie.id,participantID : app.user.id}) }}">
+                                                        <input type="hidden" id="sortieID" value="{{ sortie.id }}">
+                                                        <input type="hidden" id="participantID" value="{{ app.user.id }}">Je me désiste
+                                                    </a>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% elseif sortie.idEtat.libelle == "Créér" %}
+                                    <small class="text-danger">Pas d'inscription pour le moment</small>
+                                {% endif %}
                             </div>
+                        </div>
 
-                            <hr style="width: 100%; color: black; height: 1px; background-color:black;">
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
-                            <div class="user">
-                                <img src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo" alt="user" />
-                                <div class="user-info">
-                                    <h5><a class="a_profil" href="{{ path('app_participant_show',{id : sortie.idOrganisateur.id}) }}">{{ sortie.idOrganisateur.nom }} {{ sortie.idOrganisateur.prenom }}</a></h5>
-                                    <small>Etat : {{ sortie.idEtat.libelle }}</small>
-                                </div>
+                        <div class="user">
+                            <img src="{{ asset('image/default_profile.jpg') }}" alt="defaultPicture" class="img-fluid rounded" />
+                            <div class="user-info">
+                                <h5><a class="a_profil" href="{{ path('app_participant_show',{id : sortie.idOrganisateur.id}) }}">{{ sortie.idOrganisateur.nom }} {{ sortie.idOrganisateur.prenom }}</a></h5>
+                                <small>Etat : {{ sortie.idEtat.libelle }}</small>
                             </div>
                         </div>
                     </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
+    <button class="btnValider">
+        <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
+    </button>
 
 
 {% endblock %}
