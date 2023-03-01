@@ -30,7 +30,7 @@
             <a class="btn btn-outline-success" href="{{ path("update_participant",{id : app.user.id})}}">Modifier mon profil</a>
          {% endif %}
          {% if is_granted('ROLE_ADMIN') and participant.id != app.user.id %}      
-            <a class="btn btn-outline-success" href="{{ path("app_desactiver_participant",{id : participant.id})}}">Désactiver ce participant</a>
+            <a class="btn btn-outline-success" href="{{ path("app_desactiver_participant",{id : participant.id})}}">{{ participant.isActif ? "Désactiver ce participant" : "Activer ce participant"}}</a>
             <a class="btn btn-outline-success" href="{{ path("app_supprimer_participant",{id : participant.id})}}">Supprimer ce participant</a>
          {% endif %}
       </div>
