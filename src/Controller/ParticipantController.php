@@ -36,5 +36,23 @@ class ParticipantController extends AbstractController
         $participant = $this->participantsRepository->find($id);
 
         return $this->render('participants/show.html.twig', ['participant' => $participant]);
-    }    
+    }   
+    
+    #[Route('/desactiver/{id}', name: 'app_desactiver_participant')]
+    public function desactiver($id): Response {
+        $participant = $this->participantsRepository->find($id);
+
+        $participant->setIsActif(false);
+        $this->participantsRepository->save($participant,true);
+
+        return $this->render('participants/show.html.twig', ['participant' => $participant]);
+    }
+
+    #[Route('/supprimer/{id}', name: 'app_supprimer_participant')]
+    public function supprimer($id): Response {
+        $participant = $this->participantsRepository->find($id);
+        $this->participantsRepository->remove($participant, true);
+
+        return $this->redirectToRoute('app_accueil');
+    }
 }
