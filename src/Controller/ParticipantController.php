@@ -42,7 +42,7 @@ class ParticipantController extends AbstractController
     public function desactiver($id): Response {
         $participant = $this->participantsRepository->find($id);
 
-        $participant->setIsActif(false);
+        $participant->setIsActif(!$participant->isIsActif());
         $this->participantsRepository->save($participant,true);
 
         return $this->render('participants/show.html.twig', ['participant' => $participant]);
