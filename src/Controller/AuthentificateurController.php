@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Service\FileUploader;
 use App\Form\UploadFileFormType;
 use App\Repository\SitesRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class AuthentificateurController extends AbstractController
 {
@@ -127,13 +128,38 @@ class AuthentificateurController extends AbstractController
         ]);
     }
 
-    #[Route('/creation-multiple', name: 'app_creation_multiple')]
-    //#[IsGranted(["ROLE_ADMIN"])]
+    #[Route('/inscription-admin', name: 'app_inscription_admin')]
     public function inscriptionMultiple(Request $request, UserPasswordHasherInterface $userPasswordHasher, FileUploader $fileUploader): Response{
-       
+        $part = new Participants();
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $participantForm = $this->createForm(ParticipantsFormType::class,$part);
         $formFile = $this->createForm(UploadFileFormType::class);
         $formFile->handleRequest($request);
         $sites = $this->sitesRepository->findAll();
+
+        if($participantForm->isSubmitted() && $participantForm->isValid()){
+             #Enregistrement de l'image
+             $file = $participantForm->get('image')->getData();
+             /**
+              * @var UploadedFile $file
+              */
+             if ($file) {
+                 $newFileName = $part->getNom() . '-' . uniqid() . '.' . $file->guessExtension();
+                 $file->move($this->getParameter('upload_image_participant'), $newFileName);
+                 $part->setImage($newFileName);
+             }else{
+                 $part->setImage('public/image/default_profile.png');
+             }
+ 
+             $part->setPassword(
+                 $userPasswordHasher->hashPassword(
+                     $part,
+                     $participantForm->get('password')->getData()
+                 )
+             );
+             $this->participantsRepository->save($part,true);
+             return $this->redirectToRoute("app_accueil");
+        }
 
         if ($formFile->isSubmitted()) {           
             $participantFile = $formFile->get('participants')->getData();
@@ -173,11 +199,13 @@ class AuthentificateurController extends AbstractController
                                                 
                     }
                     fclose($handle);               
-                    return $this->render("registration/register.html.twig", ["createForm" => $formFile->createView() ]);
-                    //return $this->redirectToRoute('app_accueil');
+                    return $this->redirectToRoute('app_accueil');
                 }
             }            
         }
-        return $this->render("registration/register.html.twig", ["createForm" => $formFile->createView() ]);
+        return $this->render("participants/createAdmin.html.twig", 
+            ["createForm" => $formFile->createView() , 
+            'participantForm' => $participantForm->createView()
+        ]);
     }
 }
