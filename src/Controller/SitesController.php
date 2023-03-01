@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sites;
 use App\Repository\SitesRepository;
 use App\Repository\SortiesRepository;
+use App\Services\UpdtatedServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,11 @@ class SitesController extends AbstractController
     private SitesRepository $sitesRepository;
     private SortiesRepository $sortiesRepository;
 
-    public function __construct(SitesRepository $sitesRepository,SortiesRepository $sortiesRepository)
+    public function __construct(SitesRepository $sitesRepository,SortiesRepository $sortiesRepository,UpdtatedServices $services)
     {
         $this->sitesRepository = $sitesRepository;
         $this->sortiesRepository = $sortiesRepository;
+        $this->services = $services;
     }
     #[Route('/', name: 'app_sites')]
     public function index(): Response
@@ -75,32 +77,12 @@ class SitesController extends AbstractController
         return $this->render('sites/index.html.twig', ['sites' => $sites]);
     }
 
-//    #[Route('/suppression/{id}', name: 'delete_sites')]
-//    public function delete($id,CsrfTokenManagerInterface $csrfTokenManager,Request $request): Response
-//    {
-//        $this->denyAccessUnlessGranted("ROLE_ADMIN");
-//
-//        $site = $this->sitesRepository->find($id);
-//        if($token = new CsrfToken('app_delete_sites', $request->query->get('_csrf_token'))) {
-//            if(!$csrfTokenManager->isTokenValid($token)) {
-//                $this->addFlash('warning', '');
-//                throw $this->createAccessDeniedException('Jeton CSRF invalide');
-//            } else {
-//                try {
-//                    $this->sitesRepository->remove($site, true);
-//                } catch (\Exception $exception) {
-//                    $this->addFlash('error', '');
-//                }
-//            }
-//        }
-//
-//        return $this->redirectToRoute('app_sites');
-//    }
-
     #[Route('/{id}', name: 'read_sites')]
     public function read($id): Response
     {
-        $this->denyAccessUnlessGranted("ROLE_ADMIN");
+        $this->denyAccessUnlessGranted("ROLE_PARTICIPANT");
+
+        $this->services->setEtat();
 
         $sorties = $this->sortiesRepository->findAll();
         $site = $this->sitesRepository->find($id);
