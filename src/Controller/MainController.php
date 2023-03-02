@@ -25,6 +25,10 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_accueil')]
     public function index(Request $request): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $this->services->setEtat();
         
         $data = ['message' => 'Type your message here'];        
