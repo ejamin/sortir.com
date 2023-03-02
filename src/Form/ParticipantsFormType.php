@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Sites;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ParticipantsFormType extends AbstractType
 {
@@ -24,7 +26,7 @@ class ParticipantsFormType extends AbstractType
             ->add('prenom',TextType::class,["label" => "Prenom"])
             ->add('nom',TextType::class,["label" => "Nom"])
             ->add('telephone',TextType::class,["label" => "Telephone"])
-            ->add('email',TextType::class,["label" => "Email"])
+            ->add('email',TextType::class,["label" => "Email"])        
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passes ne sont pas identiques',
