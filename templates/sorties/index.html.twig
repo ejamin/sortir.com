@@ -94,9 +94,11 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% if is_granted('ROLE_ADMIN') %}
     <button class="btnValider">
         <a class="navbar-brand" href="{{ path('create_sorties') }}">Créer une sortie</a>
     </button>
+    {% endif %}
 
 
 {% endblock %}
