@@ -19,7 +19,6 @@ class Villes
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Unique]
     private ?string $nom = null;
 
     #[ORM\Column(length: 10)]

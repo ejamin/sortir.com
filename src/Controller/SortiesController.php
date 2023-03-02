@@ -81,7 +81,7 @@ class SortiesController extends AbstractController
             } catch (\Exception $exception) {
                 $this->addFlash('error', '');
             }
-
+            
             return $this->redirectToRoute('read_sorties',['id' => $sortie->getId()]);
         }
 
@@ -91,7 +91,6 @@ class SortiesController extends AbstractController
     #[Route('/{id}', name: 'read_sorties')]
     public function read($id): Response
     {
-
         $this->services->setEtat();
 
         $isParticipant = $this->isGranted("ROLE_PARTICIPANT");
