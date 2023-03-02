@@ -85,7 +85,7 @@
                         <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
                         <div class="user">
-                            <img src="{{ asset('image/default_profile.jpg') }}" alt="defaultPicture" class="img-fluid rounded" />
+                            <img src="{{ asset('image/photoParticipant/' ~ sortie.idOrganisateur.image) }}" class="card-img-top" alt="{{ sortie.idOrganisateur.nom }}" />
                             <div class="user-info">
                                 <h5><a class="a_profil" href="{{ path('app_participant_show',{id : sortie.idOrganisateur.id}) }}">{{ sortie.idOrganisateur.nom }} {{ sortie.idOrganisateur.prenom }}</a></h5>
                                 <small>Etat : {{ sortie.idEtat.libelle }}</small>
