@@ -82,7 +82,7 @@
                             <hr style="width: 100%; color: black; height: 1px; background-color:black;">
 
                             <div class="user">
-                                <img src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo" alt="user" />
+                                <img src="{{ asset('image/photoParticipant/' ~ app.user.image) }}" class="card-img-top" alt="{{ app.user.nom }}" />
                                 <div class="user-info">
                                     <h5>{{ sortie.idOrganisateur.nom }} {{ sortie.idOrganisateur.prenom }}</h5>
                                     <small>Etat : {{ sortie.idEtat.libelle }}</small>

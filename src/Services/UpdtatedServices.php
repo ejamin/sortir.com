@@ -33,25 +33,23 @@ class UpdtatedServices
             $now = new \DateTime;
             $archive = $sortie->getDateDebut()->modify("+43800 minutes");
 
-            if($now < $fin && $nbParticipant < $nbParticipantTotal) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Ouverte']));
-                $this->sortiesRepository->save($sortie, true);
-            }
-            if($now > $debut && $now < ($debut->modify("+{$duree} minutes"))) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Activitée en cours']));
-                $this->sortiesRepository->save($sortie, true);
-            }
-            if($now > $fin || $nbParticipant == $nbParticipantTotal) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Clôturée']));
-                $this->sortiesRepository->save($sortie, true);
-            }
-            if($now > ($debut->modify("+{$duree} minutes"))) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Passée']));
-                $this->sortiesRepository->save($sortie, true);
-            }
-            if($now > $archive) {
-                $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Archivée']));
-                $this->sortiesRepository->save($sortie, true);
+            if($sortie->getIdEtat() !== $this->etatsRepository->findOneBy(['libelle' => 'Archivée'])) {
+                if($now < $fin && $nbParticipant < $nbParticipantTotal) {
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Ouverte']));
+                    $this->sortiesRepository->save($sortie, true);
+                } elseif($now > $debut && $now < ($debut->modify("+{$duree} minutes"))) {
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Activitée en cours']));
+                    $this->sortiesRepository->save($sortie, true);
+                } elseif($now > $fin || $nbParticipant == $nbParticipantTotal) {
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Clôturée']));
+                    $this->sortiesRepository->save($sortie, true);
+                } elseif($now > ($debut->modify("+{$duree} minutes"))) {
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Passée']));
+                    $this->sortiesRepository->save($sortie, true);
+                } elseif($now > $archive) {
+                    $sortie->setIdEtat($this->etatsRepository->findOneBy(['libelle' => 'Archivée']));
+                    $this->sortiesRepository->save($sortie, true);
+                }
             }
         }
     }
