@@ -7,13 +7,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class VilleFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', null, ['label' => 'Ville : '])
+            ->add('nom', TextType::class, ['label' => 'Ville : '])
             ->add('codePostal', null, ['label' => 'Code Postal : '])
             ->add('ajouter', SubmitType::class, ['label'=> "Ajouter"])
         ;
